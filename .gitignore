@@ -1,0 +1,9 @@
+# Local BMAD config (personal overrides, not shared)
+_bmad/config.user.toml
+_bmad/custom/config.user.toml
+_bmad/custom/*.user.toml
+_bmad/.claude/
+
+# OS
+.DS_Store
+Thumbs.db
