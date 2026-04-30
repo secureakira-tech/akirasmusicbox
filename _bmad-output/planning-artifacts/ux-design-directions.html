@@ -205,6 +205,7 @@ body {
 #d1 .prose {
   font-family: var(--font-body);
   font-size: 20px;
+  font-weight: 450;
   line-height: 1.7;
   color: var(--brown);
 }
@@ -449,6 +450,46 @@ body {
   color: var(--dark-orange);
   margin-bottom: 0.2rem;
 }
+
+/* ============================================================
+   DIRECTION 1: DARK MODE OVERRIDES
+   ============================================================ */
+#d1.dark { background: #1C1510; }
+#d1.dark .site-nav {
+  background: #231A13;
+  border-bottom-color: #3D2A1F;
+}
+#d1.dark .site-name { color: #F0E8DC; }
+#d1.dark .site-nav nav a { color: #9A8070; }
+#d1.dark .site-nav nav a:hover { color: var(--teal); }
+#d1.dark .threshold { border-bottom-color: #3D2A1F; }
+#d1.dark .post-title { color: #F0E8DC; }
+#d1.dark .post-subtitle { color: #9A8070; }
+#d1.dark .post-type { background: #3D2A1F; color: #9A8070; }
+#d1.dark .meta-strip { color: #9A8070; }
+#d1.dark .prose { color: #F0E8DC; }
+#d1.dark .prose h2 { color: #F0E8DC; }
+#d1.dark .primary-embed { background: #281E14; }
+#d1.dark .reference-embed { background: #281E14; }
+#d1.dark .ref-label { color: #9A8070; }
+#d1.dark .hifi-sidebar {
+  background: rgba(90,144,96,0.08);
+  border-color: #5A9060;
+  border-left-color: #5A9060;
+}
+#d1.dark .hifi-label { color: #5A9060; border-bottom-color: rgba(90,144,96,0.25); }
+#d1.dark .hifi-content { color: #D8CDBF; }
+#d1.dark .note-num { color: #3AAFAF; }
+#d1.dark .note-body { color: #9A8070; border-left-color: rgba(58,175,175,0.2); }
+#d1.dark .coda { border-top-color: #3D2A1F; }
+#d1.dark .coda-text { color: #D8CDBF; }
+#d1.dark .matrix { color: #6A5040; }
+#d1.dark .listening-note { color: #9A8070; }
+#d1.dark .post-nav a { border-color: #3D2A1F; }
+#d1.dark .post-nav a:hover { border-color: var(--teal); }
+#d1.dark .nav-dir { color: #6A5040; }
+#d1.dark .nav-title { color: #F0E8DC; }
+#d1.dark .nav-issue { color: #E06820; }
 
 /* ============================================================
    DIRECTION 2: THE DENSER / EDITORIAL
@@ -886,6 +927,7 @@ body {
   <button onclick="showDir(2)">Direction 2: Editorial / Dense</button>
   <button onclick="showDir(3)">Direction 3: Minimal / Airy</button>
   <button onclick="showDir(4)">Palette & Type Reference</button>
+  <button id="dark-toggle" onclick="toggleDark()" style="margin-left:auto;font-size:14px;padding:0 0.75rem;opacity:0.6;" title="Toggle dark mode (Direction 1 only)">☾</button>
 </div>
 
 <!-- ============================================================
@@ -1255,6 +1297,14 @@ function triggerEcho(el) {
   void el.offsetWidth; // reflow to restart animation
   el.classList.add('playing');
   setTimeout(() => el.classList.remove('playing'), 1600);
+}
+
+function toggleDark() {
+  const d1 = document.getElementById('d1');
+  const btn = document.getElementById('dark-toggle');
+  const isDark = d1.classList.toggle('dark');
+  btn.textContent = isDark ? '☀' : '☾';
+  btn.style.opacity = isDark ? '1' : '0.6';
 }
 </script>
 

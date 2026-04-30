@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>akirasmusicbox — User Journey Flows</title>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600&family=IBM+Plex+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --cream:       #F5F0E8;
+  --brown:       #3D2B1F;
+  --dark-orange: #C4520A;
+  --green:       #3A5C3A;
+  --teal:        #2A7F7F;
+  --cream-dark:  #EAE3D5;
+  --brown-light: #6B4D3A;
+  --page-bg:     #1C1510;
+  --surface:     #231A13;
+  --border:      #3D2A1F;
+  --text-primary: #F0E8DC;
+  --text-muted:  #9A8070;
+
+  --font-heading: 'Space Grotesk', sans-serif;
+  --font-mono:    'IBM Plex Mono', monospace;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font-heading);
+  background: var(--page-bg);
+  color: var(--text-primary);
+  padding: 0;
+}
+
+/* Nav */
+.site-nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 0 2rem;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.site-name {
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--text-primary);
+}
+.site-sub {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+/* Layout */
+.page {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 3rem 2rem 6rem;
+}
+
+.page-title {
+  font-size: 28px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+  margin-bottom: 0.5rem;
+}
+.page-sub {
+  font-size: 14px;
+  color: var(--text-muted);
+  margin-bottom: 3rem;
+  font-weight: 400;
+}
+
+/* Journey cards */
+.journey {
+  margin-bottom: 4rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--teal);
+  border-radius: 0 6px 6px 0;
+  overflow: hidden;
+}
+
+.journey-header {
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+}
+.journey-num {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--teal);
+  letter-spacing: 0.08em;
+}
+.journey-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+.journey-persona {
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--text-muted);
+  margin-left: auto;
+}
+
+.journey-desc {
+  padding: 1rem 1.5rem;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--text-muted);
+  border-bottom: 1px solid var(--border);
+}
+
+.journey-diagram {
+  padding: 2rem 1.5rem;
+  overflow-x: auto;
+}
+
+/* Mermaid override — dark theme */
+.journey-diagram .mermaid {
+  display: flex;
+  justify-content: center;
+}
+
+/* Patterns section */
+.patterns {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--green);
+  border-radius: 0 6px 6px 0;
+  padding: 1.5rem;
+}
+.patterns-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 1.25rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--border);
+}
+.pattern-item {
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border);
+}
+.pattern-item:last-child {
+  margin-bottom: 0;
+  padding-bottom: 0;
+  border-bottom: none;
+}
+.pattern-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--teal);
+  margin-bottom: 0.35rem;
+}
+.pattern-desc {
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--text-muted);
+  font-weight: 400;
+}
+</style>
+</head>
+<body>
+
+<nav class="site-nav">
+  <span class="site-name">akirasmusicbox</span>
+  <span class="site-sub">ux-design-specification / user-journey-flows</span>
+</nav>
+
+<div class="page">
+  <h1 class="page-title">User Journey Flows</h1>
+  <p class="page-sub">Five journeys from the PRD, mapped as interaction flows. Step 10 of bmad-create-ux-design.</p>
+
+  <!-- Journey 1 -->
+  <div class="journey">
+    <div class="journey-header">
+      <span class="journey-num">JOURNEY 01</span>
+      <span class="journey-title">The Discovery Reader</span>
+      <span class="journey-persona">Marcus — cold entry, highest stakes</span>
+    </div>
+    <div class="journey-desc">
+      Arrives via external link (Slack, social, forward). Skeptical. Decides within 3 seconds. The read-listen loop is the conversion event; Bandcamp click and newsletter subscribe are the exits.
+    </div>
+    <div class="journey-diagram">
+      <div class="mermaid">
+flowchart TD
+    A([External link\nSlack / social / forward]) --> B[Post page loads\nHeadline + signal line visible]
+    B --> C{Cold reader\n0–3 seconds}
+    C -->|Bounce| Z([Tab closes])
+    C -->|Continue| D[Read opening\nparagraphs]
+    D --> E[Primary embed\nappears in prose]
+    E --> F[▶ Play track]
+    F --> G[Read next paragraph\nmusic playing]
+    G --> H{Read-listen\nloop}
+    H -->|Replay| F
+    H -->|Continue| I[Mid-post content\nRef embed if present]
+    I --> J[Artist support block\nBandcamp / social / merch]
+    J --> K{Support action}
+    K -->|Buy| L([→ Bandcamp])
+    K -->|Follow| M([→ Social])
+    K -->|Skip| N[Closing ritual\nmatrix + listening note]
+    L --> N
+    M --> N
+    N --> O[Newsletter\nsubscribe block]
+    O --> P{Subscribe?}
+    P -->|Yes| Q([Email → Buttondown])
+    P -->|No| R[Post navigation]
+    Q --> R
+    R --> S{More?}
+    S -->|Archive| T([Archive / taxonomy browse])
+    S -->|Done| U([Session ends])
+      </div>
+    </div>
+  </div>
+
+  <!-- Journey 2 -->
+  <div class="journey">
+    <div class="journey-header">
+      <span class="journey-num">JOURNEY 02</span>
+      <span class="journey-title">The Subscriber</span>
+      <span class="journey-persona">Priya — weekly ritual, established trust</span>
+    </div>
+    <div class="journey-desc">
+      Arrives via Buttondown email. Knows what the site is. Friction is lower everywhere. Archive browsability is important — she goes back to posts she skipped.
+    </div>
+    <div class="journey-diagram">
+      <div class="mermaid">
+flowchart TD
+    A([Buttondown email\narrives Friday]) --> B[Open email\nsubject: track name]
+    B --> C[Read excerpt\n3 paragraphs + music citation]
+    C --> D{Click through?}
+    D -->|No| Z([Email archived])
+    D -->|Yes| E[Post page loads\nfamiliar layout]
+    E --> F[Read from top]
+    F --> G[Embed: ▶ Play]
+    G --> H[Read-listen loop]
+    H --> I[Complete post]
+    I --> J{Artist action}
+    J -->|Follow / buy| K([External platform])
+    J -->|Skip| L[Post navigation]
+    K --> L
+    L --> M{Continue?}
+    M -->|Next / prev| F
+    M -->|Archive| N[Browse: genre / mood / era]
+    M -->|Done| O([Session ends])
+    N --> P[Taxonomy page\nfiltered post list]
+    P --> F
+      </div>
+    </div>
+  </div>
+
+  <!-- Journey 3 -->
+  <div class="journey">
+    <div class="journey-header">
+      <span class="journey-num">JOURNEY 03</span>
+      <span class="journey-title">The Hi-Fi Curious Reader</span>
+      <span class="journey-persona">Daniel — sidebar scanner, archive browser</span>
+    </div>
+    <div class="journey-desc">
+      Arrives via audiophile referral. Reading is secondary — he's looking for the sidebar. Archive browsability by sidebar presence is structurally load-bearing for this journey.
+    </div>
+    <div class="journey-diagram">
+      <div class="mermaid">
+flowchart TD
+    A([External link\nr/audiophile / referral]) --> B[Post page loads]
+    B --> C[Reading prose]
+    C --> D[Hi-fi sidebar\ncaught in scan\ngreen zone, right gutter]
+    D --> E[Read sidebar\nProduction Note / Listener Gloss]
+    E --> F[Listen with new frame\nheadphones vs. speakers]
+    F --> G{Explore more?}
+    G -->|No| H([Finish post or close])
+    G -->|Yes| I[Archive page]
+    I --> J[Filter: hi-fi sidebar posts]
+    J --> K[Post list\nhi-fi-tagged posts]
+    K --> L[Select post]
+    L --> M[Post page:\nsidebar visible\nin right gutter]
+    M --> E
+      </div>
+    </div>
+  </div>
+
+  <!-- Journey 4 -->
+  <div class="journey">
+    <div class="journey-header">
+      <span class="journey-num">JOURNEY 04</span>
+      <span class="journey-title">The Author — Nominal Publish Week</span>
+      <span class="journey-persona">Akira — Tuesday, buffer at 2, no surprises</span>
+    </div>
+    <div class="journey-desc">
+      Fast, local, self-contained. Push → deploy → queue. All error recovery loops back to local preview before push.
+    </div>
+    <div class="journey-diagram">
+      <div class="mermaid">
+flowchart TD
+    A([Draft post\nlocal Markdown editor]) --> B[Frontmatter\ngenre era instrument mood post-type]
+    B --> C{Hi-fi sidebar\nin this post?}
+    C -->|Yes| D[Write sidebar\nProduction Note / Gloss / Dissent]
+    C -->|No| E[Skip sidebar]
+    D --> F[Local preview\nastro dev server]
+    E --> F
+    F --> G{Sidebar\nrenders correctly?}
+    G -->|No| H[Fix MDX / frontmatter]
+    H --> F
+    G -->|Yes| I[Verify embed URLs\nSpotify / Apple / YouTube]
+    I --> J{Embeds\nloading?}
+    J -->|No| K[Fix URL or\nCSP allowlist entry]
+    K --> F
+    J -->|Yes| L[git push to main]
+    L --> M[Vercel build\n< 2 min]
+    M --> N{Build passes?}
+    N -->|No| O[Check logs\nfix error]
+    O --> L
+    N -->|Yes| P[Post live on site]
+    P --> Q[Queue Buttondown\nThursday scheduled send]
+    Q --> R([Done — buffer ≥ 2])
+      </div>
+    </div>
+  </div>
+
+  <!-- Journey 5 -->
+  <div class="journey">
+    <div class="journey-header">
+      <span class="journey-num">JOURNEY 05</span>
+      <span class="journey-title">The Author — Opera Week</span>
+      <span class="journey-persona">Akira — 2 hours, buffer at 1, no sidebar required</span>
+    </div>
+    <div class="journey-desc">
+      Identical path to Journey 4 but shorter: no sidebar, one embed, 400 words minimum. Short-form post path must feel identical in quality to standard — same design, less content.
+    </div>
+    <div class="journey-diagram">
+      <div class="mermaid">
+flowchart TD
+    A([Sunday morning\n2 hours available]) --> B[Open short-form\npost template]
+    B --> C[Pick one track]
+    C --> D[Write one observation\n400 words min]
+    D --> E[One embed\none artist link]
+    E --> F[Frontmatter\npost-type: short-form]
+    F --> G[Local preview\nverify embed]
+    G --> H{Looks right?}
+    H -->|No| I[Fix and re-preview]
+    I --> G
+    H -->|Yes| J[git push to main]
+    J --> K[Vercel deploy\n< 2 min]
+    K --> L[Queue Buttondown]
+    L --> M([Done — buffer restored to 2\nno post skipped])
+      </div>
+    </div>
+  </div>
+
+  <!-- Patterns -->
+  <div class="patterns">
+    <div class="patterns-title">Journey Patterns</div>
+
+    <div class="pattern-item">
+      <div class="pattern-name">Entry → Trust signal → Play</div>
+      <div class="pattern-desc">The spine of every reader journey. The page has one job in the first 3 seconds: prove it's real. Typography and silence do this before a word is read.</div>
+    </div>
+
+    <div class="pattern-item">
+      <div class="pattern-name">Read-listen loop</div>
+      <div class="pattern-desc">Not a step — a mode. The design can't force it, only allow it. CLS = 0 and embed placement in prose are the enabling conditions. Once entered, the loop is self-sustaining.</div>
+    </div>
+
+    <div class="pattern-item">
+      <div class="pattern-name">Support action as natural conclusion</div>
+      <div class="pattern-desc">Bandcamp / follow links appear after the read-listen loop has done its work. The journey earns the click — the design does not manufacture urgency before the reader is ready.</div>
+    </div>
+
+    <div class="pattern-item">
+      <div class="pattern-name">Sidebar as parallel track</div>
+      <div class="pattern-desc">Daniel's journey is structurally different from Marcus's — he's scanning, not reading linearly. The sidebar must be visually detectable from the prose column without interrupting linear readers who aren't looking for it.</div>
+    </div>
+
+    <div class="pattern-item">
+      <div class="pattern-name">Author loop is self-contained</div>
+      <div class="pattern-desc">The authoring journey has no dependency on reader behavior. Push → deploy → queue is three steps with one error-recovery path. Everything else is local preview.</div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+mermaid.initialize({
+  startOnLoad: true,
+  theme: 'dark',
+  themeVariables: {
+    primaryColor: '#2A7F7F',
+    primaryTextColor: '#F0E8DC',
+    primaryBorderColor: '#3D2A1F',
+    lineColor: '#6B4D3A',
+    secondaryColor: '#231A13',
+    tertiaryColor: '#3A5C3A',
+    background: '#1C1510',
+    mainBkg: '#231A13',
+    nodeBorder: '#3D2A1F',
+    clusterBkg: '#231A13',
+    titleColor: '#F0E8DC',
+    edgeLabelBackground: '#1C1510',
+    nodeTextColor: '#F0E8DC',
+  },
+  flowchart: {
+    htmlLabels: true,
+    curve: 'basis',
+    padding: 20,
+  }
+});
+</script>
+
+</body>
+</html>

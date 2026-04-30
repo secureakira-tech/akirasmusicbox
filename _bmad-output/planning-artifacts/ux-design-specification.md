@@ -8,6 +8,12 @@ stepsCompleted:
   - step-06-design-system
   - step-07-defining-experience
   - step-08-visual-foundation
+  - step-09-design-directions
+  - step-10-user-journeys
+  - step-11-component-strategy
+  - step-12-ux-patterns
+  - step-13-responsive-accessibility
+  - step-14-complete
 inputDocuments:
   - _bmad-output/planning-artifacts/prd.md
   - _bmad-output/planning-artifacts/implementation-readiness-report-2026-04-28.md
@@ -571,3 +577,544 @@ The reader finishes the post. The closing ritual is below — coda, matrix numbe
 
 **Embed failure:**
 Container remains — same dimensions, same border, same background — with one line in the site's voice: *"This player isn't loading — find it on [platform] instead."* Linked directly. No broken layout. No blank space.
+
+---
+
+## Design Direction Decision
+
+### Design Directions Explored
+
+Four directions were generated and evaluated as an interactive HTML showcase:
+
+- **Direction 1 — The Canonical:** Two-column layout with prose column (max 700px) and persistent annotation gutter (220px). All components rendered in context: PrimaryEmbed with boombox echo animation, ReferenceEmbed floating inline, hi-fi sidebar in a green-bordered zone, Note annotations in the margin gutter, closing ritual with matrix number and listening note.
+- **Direction 2 — Editorial/Dense:** Dark brown nav, issue band across the top, tighter spacing throughout. Print editorial energy, more visual authority.
+- **Direction 3 — Minimal/Airy:** Single-column, generous whitespace, hi-fi sidebar collapses to inline block. Maximum textual focus; sidebar loses its spatial parallel-track identity.
+- **Direction 4 — Palette & Type Reference:** Design system specimen page — color swatches, full type scale, not a layout direction.
+
+### Chosen Direction
+
+**Direction 1 — The Canonical**, with two modifications identified during evaluation:
+
+1. **Body text weight:** Source Serif 4 at `font-weight: 450` (not 400). Weight 400 reads too light at reading distance, particularly on the cream background.
+2. **Dark mode:** `prefers-color-scheme: dark` is a hard requirement, not a nice-to-have. The site's primary audience (security engineers, developers) has high dark-mode adoption. Dark palette: near-black warm background (`#1C1510`), cream text (`#F0E8DC`), teal/green/dark-orange retained and slightly brightened for dark-background contrast.
+
+### Design Rationale
+
+Direction 1 is the only layout that preserves the "Annotated Edition" model — prose and annotation coexisting spatially on the page simultaneously, not sequentially. The sidebar as a persistent parallel voice in the right gutter is structurally load-bearing; Direction 3's inline collapse dissolves this. Direction 2's editorial density trades warmth for authority in a way that doesn't serve the emotional goals (comfortable, safe). Direction 1 holds all the components, honours the three-tier sensory model, and supports the read-listen loop without compromise.
+
+Dark mode emerged as a requirement during direction review, not a feature request. It is non-negotiable.
+
+### Implementation Approach
+
+- Two-column CSS Grid: `grid-template-columns: minmax(0, 700px) 220px` with `gap: 4rem`, max-width 1200px, centred
+- Sidebar column: sticky positioning, hi-fi block at top, Note annotations below keyed to prose markers
+- Below ~900px: sidebar collapses; hi-fi sidebar moves to inline block within the prose column; Note annotations collapse to `<details>`/`<summary>` (zero JS, accessible)
+- Dark mode via `@media (prefers-color-scheme: dark)` — CSS custom properties redefined at `:root` level; no JS, no toggle (system preference only at launch)
+- Body text: Source Serif 4 variable font, `font-weight: 450` in light mode, `font-weight: 450` in dark mode (same weight — contrast improvement from dark mode background handles legibility)
+- Boombox echo animation scoped to embed wrapper; single-cycle, not looped; triggered on click/play event
+
+---
+
+## User Journey Flows
+
+### Journey 1 — The Discovery Reader (Marcus)
+
+Cold entry from an external link. Skeptical, decides within 3 seconds, closes tabs fast. The read-listen loop is the conversion event; Bandcamp click and newsletter subscribe are the exits.
+
+```mermaid
+flowchart TD
+    A([External link\nSlack / social / forward]) --> B[Post page loads\nHeadline + signal line visible]
+    B --> C{Cold reader\n0–3 seconds}
+    C -->|Bounce| Z([Tab closes])
+    C -->|Continue| D[Read opening\nparagraphs]
+    D --> E[Primary embed\nappears in prose]
+    E --> F[▶ Play track]
+    F --> G[Read next paragraph\nmusic playing]
+    G --> H{Read-listen\nloop}
+    H -->|Replay| F
+    H -->|Continue| I[Mid-post content\nRef embed if present]
+    I --> J[Artist support block\nBandcamp / social / merch]
+    J --> K{Support action}
+    K -->|Buy| L([→ Bandcamp])
+    K -->|Follow| M([→ Social])
+    K -->|Skip| N[Closing ritual\nmatrix + listening note]
+    L --> N
+    M --> N
+    N --> O[Newsletter\nsubscribe block]
+    O --> P{Subscribe?}
+    P -->|Yes| Q([Email → Buttondown])
+    P -->|No| R[Post navigation]
+    Q --> R
+    R --> S{More?}
+    S -->|Archive| T([Archive / taxonomy browse])
+    S -->|Done| U([Session ends])
+```
+
+### Journey 2 — The Subscriber (Priya)
+
+Arrives via Buttondown email. Established trust, weekly ritual. Archive browsability is important — she returns to posts she skipped.
+
+```mermaid
+flowchart TD
+    A([Buttondown email\narrives Friday]) --> B[Open email\nsubject: track name]
+    B --> C[Read excerpt\n3 paragraphs + music citation]
+    C --> D{Click through?}
+    D -->|No| Z([Email archived])
+    D -->|Yes| E[Post page loads\nfamiliar layout]
+    E --> F[Read from top]
+    F --> G[Embed: ▶ Play]
+    G --> H[Read-listen loop]
+    H --> I[Complete post]
+    I --> J{Artist action}
+    J -->|Follow / buy| K([External platform])
+    J -->|Skip| L[Post navigation]
+    K --> L
+    L --> M{Continue?}
+    M -->|Next / prev| F
+    M -->|Archive| N[Browse: genre / mood / era]
+    M -->|Done| O([Session ends])
+    N --> P[Taxonomy page\nfiltered post list]
+    P --> F
+```
+
+### Journey 3 — The Hi-Fi Curious Reader (Daniel)
+
+Arrives via audiophile referral. Scanning for the sidebar, not reading linearly. Archive browsability by sidebar presence is structurally load-bearing.
+
+```mermaid
+flowchart TD
+    A([External link\nr/audiophile / referral]) --> B[Post page loads]
+    B --> C[Reading prose]
+    C --> D[Hi-fi sidebar\ncaught in scan\ngreen zone, right gutter]
+    D --> E[Read sidebar\nProduction Note / Listener Gloss]
+    E --> F[Listen with new frame\nheadphones vs. speakers]
+    F --> G{Explore more?}
+    G -->|No| H([Finish post or close])
+    G -->|Yes| I[Archive page]
+    I --> J[Filter: hi-fi sidebar posts]
+    J --> K[Post list\nhi-fi-tagged posts]
+    K --> L[Select post]
+    L --> M[Post page:\nsidebar visible\nin right gutter]
+    M --> E
+```
+
+### Journey 4 — The Author, Nominal Publish Week (Akira)
+
+Fast, local, self-contained. All error recovery loops back to local preview before push.
+
+```mermaid
+flowchart TD
+    A([Draft post\nlocal Markdown editor]) --> B[Frontmatter\ngenre era instrument mood post-type]
+    B --> C{Hi-fi sidebar\nin this post?}
+    C -->|Yes| D[Write sidebar\nProduction Note / Gloss / Dissent]
+    C -->|No| E[Skip sidebar]
+    D --> F[Local preview\nastro dev server]
+    E --> F
+    F --> G{Sidebar\nrenders correctly?}
+    G -->|No| H[Fix MDX / frontmatter]
+    H --> F
+    G -->|Yes| I[Verify embed URLs\nSpotify / Apple / YouTube]
+    I --> J{Embeds\nloading?}
+    J -->|No| K[Fix URL or\nCSP allowlist entry]
+    K --> F
+    J -->|Yes| L[git push to main]
+    L --> M[Vercel build\n< 2 min]
+    M --> N{Build passes?}
+    N -->|No| O[Check logs\nfix error]
+    O --> L
+    N -->|Yes| P[Post live on site]
+    P --> Q[Queue Buttondown\nThursday scheduled send]
+    Q --> R([Done — buffer ≥ 2])
+```
+
+### Journey 5 — The Author, Opera Production Week (Akira)
+
+Identical path to Journey 4, short-form variant. No sidebar required. Same design quality, less content.
+
+```mermaid
+flowchart TD
+    A([Sunday morning\n2 hours available]) --> B[Open short-form\npost template]
+    B --> C[Pick one track]
+    C --> D[Write one observation\n400 words min]
+    D --> E[One embed\none artist link]
+    E --> F[Frontmatter\npost-type: short-form]
+    F --> G[Local preview\nverify embed]
+    G --> H{Looks right?}
+    H -->|No| I[Fix and re-preview]
+    I --> G
+    H -->|Yes| J[git push to main]
+    J --> K[Vercel deploy\n< 2 min]
+    K --> L[Queue Buttondown]
+    L --> M([Done — buffer restored to 2])
+```
+
+### Journey Patterns
+
+**Entry → Trust signal → Play** is the spine of every reader journey. The page has one job in the first 3 seconds: prove it's real. Typography and silence do this before a word is read.
+
+**Read-listen loop** is not a step — a mode. The design can't force it, only allow it. CLS = 0 and embed placement in prose are the enabling conditions. Once entered, the loop is self-sustaining.
+
+**Support action as natural conclusion** — Bandcamp / follow links appear after the read-listen loop has done its work. The journey earns the click; the design does not manufacture urgency before the reader is ready.
+
+**Sidebar as parallel track** — Daniel's journey is structurally different from Marcus's. He's scanning, not reading linearly. The sidebar must be visually detectable from the prose column without interrupting linear readers who aren't looking for it.
+
+**Author loop is self-contained** — the authoring journey has no dependency on reader behavior. Push → deploy → queue is three steps with one error-recovery path. Everything else is local preview.
+
+### Flow Optimization Principles
+
+1. **Minimum steps to play** — the primary embed must be reachable without scrolling past the fold on a standard desktop viewport. Every layout decision is subordinate to this.
+2. **No dead ends** — every terminal state (embed failure, bounce from archive, tab idle) has a defined fallback. Failure states are editorial, not broken.
+3. **Error recovery stays local** — author journey errors loop back to local preview, never to a broken live post. Push is the last step, not the first.
+4. **Archive is a product surface** — taxonomy pages are not a fallback for search. They are a designed browsing experience, particularly for Priya (mood/genre) and Daniel (hi-fi sidebar filter).
+5. **Newsletter subscribe is post-end, not interrupt** — positioned after the closing ritual. The journey earns the ask; the subscriber block does not appear before the reader has completed the experience.
+
+---
+
+## Component Strategy
+
+### Design System Components
+
+Astro + Tailwind is a utility-first stack, not a component library. Tailwind provides:
+
+- `prose` class via `@tailwindcss/typography` — base body text, headings, lists, blockquotes, code blocks
+- Layout utilities — grid, flex, gap, padding, max-width, responsive breakpoints
+- Color utilities — extended with CSS custom property tokens
+- Focus/hover state utilities
+- Dark mode via `dark:` variant classes paired with `prefers-color-scheme` CSS
+
+Every interactive or editorial component is custom.
+
+### Custom Components
+
+#### PrimaryEmbed
+
+**Purpose:** Main in-prose audio player for the post's primary musical subject. The most critical component — if this fails, the product fails.
+**Usage:** Once per post, placed within prose at the point where the reader should first play.
+**Anatomy:** Outer wrapper (left border dark-orange, cream/dark surface); dark inner player bar (track name, artist, waveform placeholder, play button); optional caption below.
+**States:** Loading (placeholder with identical dimensions, no layout shift); Loaded (full player); Playing (boombox echo animation — single teal pulse, ~1.5s, not looped); Failed (styled fallback block with platform link in site voice — never a blank gap).
+**Variants:** Spotify / Apple Music / YouTube — iframe `src` differs, wrapper identical.
+**Accessibility:** `<figure>` + `<figcaption>` with track and artist name; descriptive context sentence required in prose before the embed; `title` attribute on iframe.
+
+#### ReferenceEmbed
+
+**Purpose:** Secondary or comparative track referenced mid-prose.
+**Usage:** Floated inline when a track is mentioned but is not the primary subject.
+**Anatomy:** `float: right; clear: right` at 240px on desktop; full-width inline on mobile; same dark inner player at smaller dimensions; `REF` label above.
+**States:** Same four states as PrimaryEmbed.
+**Notes:** Float cleared by next block element or explicit clearfix.
+
+#### HiFiSidebar
+
+**Purpose:** The Annotated Edition — a parallel editorial voice alongside the prose column.
+**Usage:** Optional per post; authored as frontmatter-flagged MDX block.
+**Anatomy:** `<aside>` in right gutter column; `Hi-Fi Thread` label (green, small caps, letter-spaced); three annotation types — Production Note (technical recording detail), Listener's Gloss (perceptual/experiential), Dissent/Complication (challenges or contradicts the main text).
+**States:** Desktop — sticky in gutter, green left border, green-tinted background zone; Mobile — collapses to full-width inline block between prose paragraphs.
+**Accessibility:** `<aside aria-label="Hi-Fi notes">` — independent landmark, navigable by screen reader without reading prose first.
+
+#### Note
+
+**Purpose:** Marginal annotation keyed to a specific word or phrase in prose.
+**Usage:** Maximum 3 per post; gutter space is finite.
+**Anatomy:** Superscript teal marker in prose (①②③); corresponding content in gutter column on desktop; `<details>`/`<summary>` on mobile (zero JS, natively keyboard-accessible).
+**States:** Desktop — always visible in sidebar column alongside prose; Mobile — collapsed by default, expands on tap/click/enter.
+
+#### ArtistSupport
+
+**Purpose:** Direct links to artist purchase and support channels.
+**Usage:** Placed after post body, before the closing ritual.
+**Anatomy:** Block with labelled links — Bandcamp (buy), social profiles, merch store, Patreon/crowdfunding. No urgency language. Link styling only — no button affordance.
+**States:** Default; hover (teal underline).
+**Constraint:** No calls-to-action. The journey earns the click; the component does not manufacture pressure.
+
+#### ClosingRitual
+
+**Purpose:** Post-end section signalling completion and providing navigation.
+**Usage:** Every post, always.
+**Anatomy:** Coda paragraph (italic, body font, ~2–3 sentences); matrix catalogue number (mono, muted, e.g. `AMB-001`); optional listening note (italic, muted); prev/next post navigation (two-column grid, Space Grotesk).
+**Variants:** With / without listening note based on post length and post type.
+
+#### NewsletterSubscribe
+
+**Purpose:** Email capture for Buttondown subscription.
+**Usage:** Post-end, after the closing ritual.
+**Anatomy:** Single email `<input>`, submit `<button>`, plain HTML `<form>` POSTing to Buttondown embed endpoint.
+**States:** Default; submitting (button disabled); success (Buttondown redirect to confirmation); error (Buttondown handles).
+**Constraints:** Must function with JavaScript disabled. No modal. No inline validation requiring JS. No pop-up variant.
+
+#### PostCard
+
+**Purpose:** Post listing unit for archive and taxonomy pages.
+**Usage:** Archive page, taxonomy filtered pages, related posts if implemented.
+**Anatomy:** Issue number (mono, dark-orange); title (Space Grotesk, 600); genre/mood tags (small caps, brown-light); date (mono, muted); 2-line excerpt (body font); hi-fi indicator dot (green) if sidebar present.
+**States:** Default; hover (teal left border animation).
+
+#### TaxonomyPage *(page template)*
+
+**Purpose:** Filtered post list. One template handles all taxonomy dimensions.
+**Usage:** Genre, era, instrument, mood, post-type, and hi-fi sidebar presence pages — parameter differs, layout identical.
+**Notes:** Not a component — an Astro page template using `getStaticPaths()` to generate one page per tag value.
+
+### Component Implementation Strategy
+
+All custom components are Astro components (`.astro`) unless interactivity requires a framework island. No React/Vue/Svelte unless specifically needed — and nothing identified so far requires it. Tailwind utility classes for layout and spacing; CSS custom properties for brand tokens; component-scoped `<style>` blocks for structural rules that don't map cleanly to utilities.
+
+The `not-prose` class is required on all custom components rendered inside a `prose`-wrapped `<article>` — this prevents `@tailwindcss/typography` from overriding component styles.
+
+Dark mode: `@media (prefers-color-scheme: dark)` at `:root` level. No JavaScript toggle at launch. System preference only.
+
+### Implementation Roadmap
+
+**Phase 1 — Launch blockers**
+1. `PrimaryEmbed` + failure fallback
+2. `HiFiSidebar`
+3. `NewsletterSubscribe`
+4. `ClosingRitual`
+
+**Phase 2 — Full reading experience**
+5. `ReferenceEmbed`
+6. `Note`
+7. `ArtistSupport`
+
+**Phase 3 — Archive and polish**
+8. `PostCard`
+9. `TaxonomyPage` template
+10. `src/pages/kitchen-sink.astro` — component playground and visual regression baseline
+
+---
+
+## UX Consistency Patterns
+
+### Link and Interactive States
+
+**Body text links** — teal (`#2A7F7F`), underline, `text-underline-offset: 3px`. Color deepens slightly on hover. Dark mode: teal holds without adjustment.
+
+**Nav links** — no underline at rest; teal on hover. Muted brown-light at rest communicates hierarchy without noise.
+
+**Post navigation cards** — cream-dark border at rest; teal left-border on hover. No underline — the whole card is the link target.
+
+**ArtistSupport links** — plain text with label prefix (e.g. *Buy on Bandcamp →*). Teal underline on hover. Never button-styled — the journey earns the click; the component does not dress it up as a CTA.
+
+**External links** — same as body links. No external-link icon.
+
+### Embed States
+
+Four defined states — every embed must handle all four in both light and dark mode:
+
+| State | Behaviour |
+|---|---|
+| **Loading** | Placeholder block at exact embed dimensions — no layout shift. Static, no spinner. Matches embed background color. |
+| **Loaded** | Full iframe player rendered. |
+| **Playing** | Boombox echo animation fires once on wrapper — single teal pulse (~1.5s), not looped. No ongoing state indicator beyond the player's own controls. |
+| **Failed** | Styled block (same dimensions, same border, same background) with one line in site voice: *"This player isn't loading — find it on [platform] instead."* Platform name is a direct link. Never a blank gap. Never an error code. |
+
+### Form Pattern
+
+The site has one form: `NewsletterSubscribe`. These rules apply to it and to any future form.
+
+- One visible label per field — no placeholder-as-label
+- Input: body font, site background, border uses `cream-dark`/`border` token, `2px teal` focus ring, `2px` focus offset
+- Submit button: dark-orange fill, cream text, Space Grotesk 500; hover state darkens fill by ~10%
+- No inline validation requiring JavaScript — validate on submit only
+- Success: redirect to Buttondown confirmation page
+- Error: handled server-side by Buttondown
+
+### Navigation Patterns
+
+**Site nav** — sticky top, 52px height, site name left (Space Grotesk 600), nav links right (Space Grotesk 500, muted). On mobile: same layout — three links fit inline at all target viewport sizes. No hamburger unless testing proves otherwise.
+
+**Post navigation** — two-column grid at post-end. Prev post left, next post right. Each cell: issue number (mono, dark-orange), post title (Space Grotesk 500). Bordered card at rest, teal left-border on hover.
+
+**Taxonomy navigation** — tag links in post metadata link directly to taxonomy pages. Archive page is the top-level entry. No dropdown, no mega-menu.
+
+**Breadcrumbs** — not needed. The site is shallow (home → post, home → archive → taxonomy). Back navigation is the browser.
+
+### Empty and Loading States
+
+**Taxonomy page, no matches** — *"No posts tagged [x] yet."* — in site voice. Body font, centered, muted color. No system-default empty state.
+
+**404 page** — Custom page in site voice. Brief, not clever. Link back to home and archive.
+
+**Page-level loading** — not applicable. Astro static site — pages are pre-rendered HTML.
+
+**Embed loading** — dimension-reserved placeholder only (see Embed States). No spinner — the placeholder is the loading state.
+
+### Focus and Keyboard
+
+- All interactive elements: `outline: 2px solid var(--teal); outline-offset: 2px`
+- No `outline: none` without a visible custom replacement
+- Tab order follows visual reading order — left to right, top to bottom
+- HiFiSidebar is a navigable `<aside>` landmark — independently jumpable via screen reader
+- `<details>`/`<summary>` Note components on mobile are natively keyboard-accessible — no custom JS
+
+---
+
+## Responsive Design & Accessibility
+
+### Responsive Strategy
+
+Desktop first in experience, mobile-first in CSS. The full reading experience is designed for ≥1100px. CSS is written mobile-first (min-width queries) — mobile is the base layer, desktop is the enhancement.
+
+| Zone | Viewport | Layout |
+|---|---|---|
+| **Mobile** | < 768px | Single column. HiFiSidebar inline after post header. Notes via `<details>`/`<summary>`. Embeds full-width. Nav links inline. |
+| **Tablet** | 768px – 1099px | Single column, wider measure. Same layout as mobile. Treated as desktop per PRD — same features, compressed layout. |
+| **Desktop** | ≥ 1100px | Two-column CSS grid. Prose column left, sidebar gutter right (220px). Full two-track reading experience. |
+
+### Breakpoint Strategy
+
+Single custom breakpoint: **`68.75em`** (≈1100px at default font size). Using `em` not `px` — scales with user font-size preferences and passes WCAG 1.4.10 (Reflow) at 400% zoom. All other breakpoints use Tailwind defaults.
+
+### DOM Order — Explicit Decision
+
+**Prose first. Sidebar second. Always.** Regardless of visual placement.
+
+The two-column grid puts the sidebar visually in the right gutter, but HTML source order must be: `<article>` prose first, `<aside>` sidebar second. A keyboard user must not tab into the hi-fi sidebar before reading a word — they don't know what it is yet. CSS Grid places the sidebar visually to the right via `grid-column`; source order is not affected.
+
+```html
+<div class="post-layout">
+  <article id="main-content"><!-- prose --></article>
+  <aside aria-label="Hi-Fi notes"><!-- sidebar --></aside>
+</div>
+```
+
+### Dark Mode Token Pairs
+
+Dark mode is a hard requirement. The earthy warmth of the light palette must be explicitly translated — naive inversion destroys the emotional register. Implemented as `@media (prefers-color-scheme: dark)` redefining `:root` custom properties.
+
+| Token | Light | Dark |
+|---|---|---|
+| `--color-bg` | `#F5F0E8` | `#1C1510` |
+| `--color-surface` | `#EDE8DF` | `#231A13` |
+| `--color-text` | `#3D2B1F` | `#F0E8DC` |
+| `--color-text-muted` | `#6B4D3A` | `#9A8070` |
+| `--color-border` | `#EAE3D5` | `#3D2A1F` |
+| `--color-teal` | `#256B6B` | `#3AAFAF` |
+| `--color-green` | `#3A5C3A` | `#5A9060` |
+| `--color-dark-orange` | `#C4520A` | `#E06820` |
+
+### Accessibility Strategy
+
+**Target: WCAG 2.1 AA** — required by PRD NFR17. No derogation.
+
+**Colour Contrast:**
+
+The original teal token (`#2A7F7F`) achieves ~4.3:1 on cream — this **fails** WCAG AA for normal text (requires 4.5:1). Adjusted to `#256B6B` (~4.6:1 on cream). All teal uses reference `var(--color-teal)` — one token change, no archaeology required.
+
+| Pair | Ratio | Result |
+|---|---|---|
+| `#3D2B1F` on `#F5F0E8` | ~11:1 | ✅ AAA |
+| `#F0E8DC` on `#1C1510` (dark mode) | ~11:1 | ✅ AAA |
+| `#256B6B` on `#F5F0E8` (teal, adjusted) | ~4.6:1 | ✅ AA |
+| `#3A5C3A` on `#F5F0E8` (green sidebar) | ~8.3:1 | ✅ AA |
+| `#C4520A` on `#F5F0E8` (dark orange) | ~4.7:1 | ✅ AA |
+
+**Semantic structure:**
+- `<main id="main-content">` — skip link target, required
+- `<nav>` for site navigation and post navigation
+- `<aside aria-label="Hi-Fi notes">` for HiFiSidebar
+- `<article>` wraps the post
+- `<figure>`/`<figcaption>` on all embeds
+- Heading hierarchy: `<h1>` post title only; `<h2>` sections; `<h3>` sub-sections — never skip levels
+- All images: descriptive `alt` text (PRD FR35)
+
+**Embedded audio players — iframe-specific requirements:**
+- Every iframe must carry `title="[Platform] player: [Track] — [Artist]"` — this is what screen readers announce. Not "Spotify embed." The actual track name.
+- `allow="autoplay"` must be absent from all iframe attributes (PRD NFR20). Requires a testing checklist — some embed configurations have autoplay baked in server-side.
+- **Focus trapping:** Keyboard users may not be able to tab out of a third-party iframe without Escape. Requires real keyboard testing (not screen reader — keyboard alone) on Chrome and Firefox before launch. If exit is not clean: add `tabindex="-1"` to the iframe and provide an adjacent "Open on [platform]" link.
+
+**Motion:**
+`@media (prefers-reduced-motion: reduce)` gates **all** CSS transitions and animations site-wide — not just the boombox echo. Policy: if it moves and it is non-essential, it is gated.
+
+```css
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+```
+
+### Implementation Guidelines
+
+**CSS tokens:** Every color is a CSS custom property. Zero hardcoded hex values in component stylesheets. Two `:root` blocks — one default (light), one inside `@media (prefers-color-scheme: dark)`.
+
+**Breakpoints in `em`:** `min-width: 68.75em` (not `1100px`). Scales with user zoom. Required for WCAG 1.4.10.
+
+**Skip link:**
+```html
+<a href="#main-content" class="skip-link">Skip to content</a>
+```
+Visually hidden until focused (`position: absolute; transform: translateY(-100%)` → `:focus { transform: none }`). Target: `<main id="main-content">`.
+
+**`PrimaryEmbed` aspect ratio:**
+```css
+.embed-iframe-wrapper {
+  position: relative;
+  aspect-ratio: 16 / 9;
+}
+.embed-iframe-wrapper iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+```
+Spotify audio-only embeds: `aspect-ratio: unset; height: 80px`. YouTube: `16/9`. CLS = 0.
+
+**`NewsletterSubscribe` form:**
+```html
+<label for="email-input">Email address</label>
+<input id="email-input" type="email" name="email" required>
+<button type="submit">Subscribe</button>
+```
+Explicit `for`/`id` pairing. Explicit `type="submit"`. No placeholder-as-label.
+
+**`<details>`/`<summary>` (Note component):**
+```css
+summary { cursor: pointer; }
+summary:focus-visible { outline: 2px solid var(--color-teal); outline-offset: 2px; }
+details[open] .note-body { display: block; }
+```
+Test on NVDA + Firefox before launch. If announcement is broken, add `aria-expanded` mirroring as defensive layer.
+
+**`HiFiSidebar` position contract:**
+```css
+.hifi-sidebar {
+  position: sticky;
+  top: calc(52px + 2rem);
+  z-index: 10;
+  align-self: start;
+}
+```
+Warning: `position: sticky` breaks silently if any ancestor has `overflow: hidden` or `overflow: auto`. Never set overflow on `.post-layout` or its parents.
+
+**Focus rings:**
+```css
+:focus-visible {
+  outline: 2px solid var(--color-teal);
+  outline-offset: 2px;
+}
+```
+`:focus-visible` only (not `:focus` — too broad). Never `outline: none` without a visible replacement.
+
+**Touch targets:** All interactive elements ≥ 44×44px effective tap area via padding if needed.
+
+**Viewport meta:** `<meta name="viewport" content="width=device-width, initial-scale=1">` — never `user-scalable=no`.
+
+### Testing Strategy
+
+**Automated (pre-launch gate):** Lighthouse accessibility audit ≥ 90; axe DevTools zero critical violations on a representative post, archive page, and taxonomy page.
+
+**Keyboard (pre-launch gate):** Tab through all interactive elements on a full post. Verify skip link fires and lands on `#main-content`. Verify tab exits iframes cleanly on Chrome and Firefox. Verify `<details>` Note expands/collapses on Enter/Space.
+
+**Screen reader (pre-launch gate):** VoiceOver on macOS Safari — full post read-through. NVDA on Windows Chrome — full post read-through.
+
+**Real device:** iPhone Safari, Android Chrome. Confirm sidebar inline collapse, `<details>` expand/collapse, embed scaling.
+
+**Browser matrix:** Chrome, Firefox, Safari, Edge — current and previous major. IE11 excluded.
+
+**No-autoplay checklist:** Load each embed type (Spotify, Apple Music, YouTube) in isolation. Confirm no audio starts without user interaction. Test with and without JavaScript.
+
+### Accessibility Statement Page
+
+A published page on the site (`/accessibility`) before launch. Contents: compliance target (WCAG 2.1 AA), known limitations (third-party iframe interiors are outside our control), contact method for reporting barriers. Required before launch.
