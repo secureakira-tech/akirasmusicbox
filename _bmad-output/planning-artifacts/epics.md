@@ -197,6 +197,18 @@ FR41: Epic 4 — Hi-fi presence taxonomy page
 The author has a cryptographically-established identity. The site exists on Vercel with its design system, security headers, and the ability to render a complete post from MDX source via Git push. A reader visiting any post URL gets fully-styled prose content.
 **FRs covered:** FR1, FR2, FR6, FR25
 
+**Stories (pre-defined):**
+
+#### E1-S0: GPG Key & Author Identity
+Generate Ed25519 GPG key; upload to keys.openpgp.org; generate and store revocation certificate offline; fill architecture.md placeholders (fingerprint, creation date, expiry date, revocation cert location); create public/pubkey.asc; create .well-known/security.txt; create .well-known/openpgpkey/ WKD structure.
+*Must be first story. Satisfies AR4, AR5, NFR16, NFR17.*
+
+#### E1-S1: CI/CD Pipeline (GitHub Actions)
+Create `.github/workflows/ci.yml` that runs on every push and pull request to main: `npm ci`, `astro check`, `tsc --noEmit`, `npm run build`. Fail the workflow on any error. No deployment — Vercel handles that independently via its GitHub integration.
+*Satisfies NFR15 (no broken builds reach main), AR1 (project initialized correctly).*
+
+**Epic 1 close gate:** Run `/security-review` before starting Epic 2.
+
 ### Epic 2: The Complete Post Reading Experience
 Readers get the full intended experience — embedded audio that plays inline without layout shift (boombox echo), the hi-fi sidebar as a distinct editorial thread, marginal notes, the closing ritual with matrix number, and properly handled images.
 **FRs covered:** FR3, FR5, FR8, FR10, FR14, FR15, FR16, FR38
