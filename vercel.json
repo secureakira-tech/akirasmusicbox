@@ -1,0 +1,16 @@
+{
+  "headers": [
+    {
+      "source": "/(.*)\\.asc",
+      "headers": [
+        { "key": "Content-Type", "value": "application/pgp-keys" }
+      ]
+    },
+    {
+      "source": "/.well-known/openpgpkey/(.*)",
+      "headers": [
+        { "key": "Content-Type", "value": "application/octet-stream" }
+      ]
+    }
+  ]
+}

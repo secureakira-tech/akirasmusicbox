@@ -1,0 +1,4 @@
+Contact: mailto:akirabrand@protonmail.com
+Encryption: https://akirasmusicbox.com/pubkey.asc
+Preferred-Languages: en
+Expires: 2027-05-09T00:00:00.000Z

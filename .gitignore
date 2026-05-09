@@ -7,3 +7,10 @@ _bmad/.claude/
 # OS
 .DS_Store
 Thumbs.db
+
+# GPG — private key material must never be committed
+*.key
+*_private.asc
+*_secret.asc
+revoke-*.asc
+secret-*.asc
