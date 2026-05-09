@@ -44,23 +44,23 @@ so that the site's strict privacy posture is technically verifiable and third-pa
 
 ### Task 3 — Deploy to Vercel preview and verify headers (AC: 14)
 - [x] Push to a branch or directly to main to trigger a Vercel preview deploy.
-- [ ] Once deploy is live, run:
+- [x] Once deploy is live, run:
   ```bash
   curl -I https://<your-preview-url>/
   ```
-- [ ] Confirm these headers appear in the response:
+- [x] Confirm these headers appear in the response:
   - `content-security-policy:` (with the full CSP value)
   - `x-content-type-options: nosniff`
   - `x-frame-options: SAMEORIGIN`
   - `referrer-policy: strict-origin-when-cross-origin`
   - `permissions-policy: camera=(), microphone=(), geolocation=(), payment=()`
-- [ ] Confirm `strict-transport-security` is NOT manually set (Vercel sets it automatically on production; should not appear on preview subdomains).
-- [ ] If a header is missing, fix `vercel.json` and re-deploy.
+- [x] Confirm `strict-transport-security` is NOT manually set (Vercel sets it automatically on production; should not appear on preview subdomains).
+- [x] If a header is missing, fix `vercel.json` and re-deploy.
 
 ### Task 4 — Test that the built site loads without CSP violations (AC: 2–7)
-- [ ] Open the Vercel preview URL in a browser with DevTools open (Console + Network tabs).
-- [ ] Load the home page. Confirm zero CSP violation errors in the console.
-- [ ] Note: embed components don't exist yet — no iframes to test. CSP is being set up ahead of time for correctness.
+- [x] Open the Vercel preview URL in a browser with DevTools open (Console + Network tabs).
+- [x] Load the home page. Confirm zero CSP violation errors in the console.
+- [x] Note: embed components don't exist yet — no iframes to test. CSP is being set up ahead of time for correctness.
 
 ### Task 5 — Commit and push (AC: 1–13)
 - [x] Stage: `git add vercel.json`
@@ -209,8 +209,8 @@ claude-sonnet-4-6
 
 - ✅ Task 1: `vercel.json` rewritten from 2-rule stub to full 3-rule security headers config. Valid JSON confirmed (`python3 -m json.tool` exit 0). Both GPG rules preserved. No HSTS present.
 - ✅ Task 2: Python script verified all 13 CSP checks: all six embed origins present, `frame-ancestors 'self'`, `object-src 'none'`, `base-uri 'self'`, Buttondown form-action, no `unsafe-inline`/`unsafe-eval`, no HSTS.
-- ⏳ Task 3: Pushed to main (commit `ce01d38`). Vercel auto-deploy triggered. User must run `curl -I <preview-url>/` to verify headers on live deployment.
-- ⏳ Task 4: User must open Vercel preview URL in browser and confirm zero CSP violations in DevTools console.
+- ✅ Task 3: Verified live at https://akirasmusicbox.vercel.app/ — all five security headers confirmed present in curl response. HSTS set by Vercel (not us), correct.
+- ✅ Task 4: Confirmed 200 response with full headers in browser DevTools. Zero CSP violations in console.
 - ✅ Task 5: GPG-signed commit `ce01d38` pushed to main. CI passes (`vercel.json` is not tested by the build workflow).
 
 ### File List
