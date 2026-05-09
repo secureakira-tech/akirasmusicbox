@@ -1,0 +1,16 @@
+---
+interface Props {
+  class?: string;
+}
+const { class: className } = Astro.props;
+---
+<aside
+  class:list={['hifi-sidebar-content', className]}
+  aria-label="Hi-Fi notes"
+  style="border-left: 3px solid var(--color-green); padding-left: 1rem;"
+>
+  <p style="font-family: 'Space Grotesk', sans-serif; font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.12em; color: var(--color-green); margin: 0 0 1rem;">
+    Hi-Fi Thread
+  </p>
+  <slot />
+</aside>

@@ -1,7 +1,37 @@
 ---
-import BaseLayout from '../layouts/BaseLayout.astro';
+import { getCollection, render } from 'astro:content';
+import PostLayout from '../layouts/PostLayout.astro';
+import PrimaryEmbed from '../components/PrimaryEmbed.astro';
+import ReferenceEmbed from '../components/ReferenceEmbed.astro';
+import Note from '../components/Note.astro';
+import ArtistSupport from '../components/ArtistSupport.astro';
+import ClosingRitual from '../components/ClosingRitual.astro';
+import NewsletterSubscribe from '../components/NewsletterSubscribe.astro';
+
+const posts = await getCollection('posts');
+posts.sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime());
+const latestPost = posts[0];
+
+if (!latestPost) {
+  throw new Error('No posts found. Add at least one MDX file to src/content/posts/.');
+}
+
+const { Content } = await render(latestPost);
+const { title, description, pubDate, genre, era, instrument, mood, postType, hifiSidebar } = latestPost.data;
 ---
 
-<BaseLayout title="Akira's Music Box">
-  <h1>Akira's Music Box</h1>
-</BaseLayout>
+<PostLayout
+  {title}
+  {description}
+  {pubDate}
+  {genre}
+  {era}
+  {instrument}
+  {mood}
+  {postType}
+  {hifiSidebar}
+>
+  <div class="prose">
+    <Content components={{ PrimaryEmbed, ReferenceEmbed, Note, ArtistSupport, ClosingRitual, NewsletterSubscribe }} />
+  </div>
+</PostLayout>

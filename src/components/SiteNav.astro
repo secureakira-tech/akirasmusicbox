@@ -1,0 +1,71 @@
+---
+const navLinks = [
+  { href: '/archive', label: 'Archive' },
+  { href: '/about', label: 'About' },
+  { href: '/rss.xml', label: 'RSS' },
+] as const;
+---
+
+<header class="site-nav">
+  <div class="nav-inner">
+    <a href="/" class="site-name">akirasmusicbox</a>
+    <nav aria-label="Site navigation">
+      <ul class="nav-links">
+        {navLinks.map(({ href, label }) => (
+          <li>
+            <a href={href} class="nav-link">{label}</a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<style>
+  .site-nav {
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    height: 52px;
+    background-color: var(--color-bg);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .nav-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .site-name {
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-weight: 600;
+    font-size: 1rem;
+    color: var(--color-text);
+    text-decoration: none;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 1.5rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .nav-link {
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-weight: 500;
+    font-size: 0.9rem;
+    color: var(--color-text-muted);
+    text-decoration: none;
+  }
+
+  .nav-link:hover {
+    color: var(--color-teal);
+  }
+</style>

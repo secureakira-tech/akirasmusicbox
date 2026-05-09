@@ -1,0 +1,64 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import SiteNav from '../components/SiteNav.astro';
+
+interface Props {
+  title: string;
+  description?: string;
+  ogImage?: string;
+  pubDate?: Date;
+  genre?: string;
+  era?: string;
+  instrument?: string;
+  mood?: string;
+  postType?: string;
+  hifiSidebar?: boolean;
+}
+
+const { title, description, ogImage, hifiSidebar = false } = Astro.props;
+---
+
+<BaseLayout {title} {description} {ogImage}>
+  <SiteNav slot="nav" />
+
+  <div class:list={['post-layout', { 'has-sidebar': hifiSidebar }]}>
+    <article class="prose-column">
+      <slot />
+    </article>
+
+    {hifiSidebar && (
+      <aside class="sidebar-column" aria-label="Hi-Fi notes">
+        <slot name="sidebar" />
+      </aside>
+    )}
+  </div>
+</BaseLayout>
+
+<style>
+  .post-layout {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem;
+  }
+
+  /* Two-column grid only when sidebar content is present */
+  @media (min-width: 68.75em) {
+    .post-layout.has-sidebar {
+      display: grid;
+      grid-template-columns: minmax(0, 700px) 220px;
+      gap: 4rem;
+    }
+  }
+
+  .prose-column {
+    /* min-width: 0 prevents grid blowout */
+    min-width: 0;
+  }
+
+  .sidebar-column {
+    position: sticky;
+    top: calc(52px + 2rem);
+    align-self: start;
+    /* Never set overflow here or on .post-layout — breaks position:sticky */
+  }
+</style>

@@ -1,0 +1,54 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SiteNav from '../components/SiteNav.astro';
+import PostCard from '../components/PostCard.astro';
+
+const posts = await getCollection('posts');
+posts.sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime());
+---
+
+<BaseLayout title="Archive — Akira's Music Box" description="All posts from Akira's Music Box, newest first.">
+  <SiteNav slot="nav" />
+
+  <div class="archive-container">
+    <h1 class="archive-title">Archive</h1>
+    <ul class="post-list">
+      {posts.map((post) => (
+        <li>
+          <PostCard
+            id={post.id}
+            title={post.data.title}
+            pubDate={post.data.pubDate}
+            description={post.data.description}
+            genre={post.data.genre}
+            mood={post.data.mood}
+            hifiSidebar={post.data.hifiSidebar}
+          />
+        </li>
+      ))}
+    </ul>
+  </div>
+</BaseLayout>
+
+<style>
+  .archive-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem;
+  }
+
+  .archive-title {
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    font-weight: 600;
+    font-size: 2rem;
+    color: var(--color-text);
+    margin: 0 0 2rem;
+  }
+
+  .post-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+</style>
