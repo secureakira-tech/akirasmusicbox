@@ -46,7 +46,7 @@ development_status:
   # ── Epic 1: Author Identity & Site Foundation ──────────────────────────────
   epic-1: in-progress
   1-0-gpg-key-and-author-identity: review
-  1-1-ci-cd-pipeline-github-actions: ready-for-dev
+  1-1-ci-cd-pipeline-github-actions: review
   epic-1-retrospective: optional
 
   # ── Epic 2: The Complete Post Reading Experience ───────────────────────────

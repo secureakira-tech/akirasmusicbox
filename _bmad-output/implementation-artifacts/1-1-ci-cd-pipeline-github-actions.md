@@ -1,6 +1,6 @@
 # Story 1.1: CI/CD Pipeline (GitHub Actions)
 
-Status: ready-for-dev
+Status: review
 
 ## Story
 
@@ -22,24 +22,24 @@ so that broken builds are caught before they reach the main branch and no bad co
 
 ## Tasks / Subtasks
 
-- [ ] Task 1 — Create `.github/workflows/` directory structure (AC: 1)
-  - [ ] Create directory: `.github/workflows/` at the repo root
-  - [ ] Confirm no `.github/` directory already exists (fresh repo — it should not)
+- [x] Task 1 — Create `.github/workflows/` directory structure (AC: 1)
+  - [x] Create directory: `.github/workflows/` at the repo root
+  - [x] Confirm no `.github/` directory already exists (fresh repo — it should not)
 
-- [ ] Task 2 — Write `ci.yml` from the exact template in Dev Notes (AC: 1–9)
-  - [ ] Copy the YAML content from the "ci.yml Content" section below verbatim
-  - [ ] Confirm no `continue-on-error` key appears anywhere in the file
-  - [ ] Confirm no `deploy`, `vercel`, or secret references appear anywhere in the file
+- [x] Task 2 — Write `ci.yml` from the exact template in Dev Notes (AC: 1–9)
+  - [x] Copy the YAML content from the "ci.yml Content" section below verbatim
+  - [x] Confirm no `continue-on-error` key appears anywhere in the file
+  - [x] Confirm no `deploy`, `vercel`, or secret references appear anywhere in the file
 
-- [ ] Task 3 — Validate YAML syntax locally (AC: 1)
-  - [ ] Run: `python3 -m py_compile /dev/null && python3 -c "import yaml; yaml.safe_load(open('.github/workflows/ci.yml'))" && echo "YAML OK"`
-  - [ ] Alternatively: `npx js-yaml .github/workflows/ci.yml` (if Node is available)
-  - [ ] Accept either: zero errors from a YAML linter, OR a successful GitHub Actions run on the next push
+- [x] Task 3 — Validate YAML syntax locally (AC: 1)
+  - [x] Run: `python3 -m py_compile /dev/null && python3 -c "import yaml; yaml.safe_load(open('.github/workflows/ci.yml'))" && echo "YAML OK"`
+  - [x] Alternatively: `npx js-yaml .github/workflows/ci.yml` (if Node is available)
+  - [x] Accept either: zero errors from a YAML linter, OR a successful GitHub Actions run on the next push
 
-- [ ] Task 4 — Commit the workflow file (AC: 1–9)
-  - [ ] Stage only `.github/workflows/ci.yml`
-  - [ ] Write a signed commit (GPG signing is active after Story 1.0): `git commit -S -m "feat: add GitHub Actions CI workflow"`
-  - [ ] Push to main (or open a PR — note: first CI run will fail because Astro is not yet initialized; this is expected and documented)
+- [x] Task 4 — Commit the workflow file (AC: 1–9)
+  - [x] Stage only `.github/workflows/ci.yml`
+  - [x] Write a signed commit (GPG signing is active after Story 1.0): `git commit -S -m "feat: add GitHub Actions CI workflow"`
+  - [x] Push to main (or open a PR — note: first CI run will fail because Astro is not yet initialized; this is expected and documented)
 
 ## Dev Notes
 
@@ -155,4 +155,11 @@ claude-sonnet-4-6
 
 ### Completion Notes List
 
+- ✅ Task 1: `.github/workflows/` created. Confirmed no pre-existing `.github/` directory.
+- ✅ Task 2: `ci.yml` written verbatim from story template. Zero instances of `continue-on-error`, `deploy`, `vercel`, or secret references.
+- ✅ Task 3: YAML validated with `python3 yaml.safe_load` — passed clean. Forbidden key grep returned 0 matches.
+- ✅ Task 4: Signed commit `522f209` pushed to main. CI will fail on `npm ci` until Astro is initialized in Story 1.2 — expected and documented.
+
 ### File List
+
+- `.github/workflows/ci.yml` (new)
