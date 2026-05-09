@@ -1,0 +1,86 @@
+---
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description?: string;
+  ogImage?: string;
+  canonicalUrl?: string;
+}
+
+const {
+  title,
+  description = "Akira's Music Box — a personal publication about music.",
+  ogImage = '/og-default.png',
+  canonicalUrl = Astro.url.href,
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <link rel="canonical" href={canonicalUrl} />
+
+    <title>{title}</title>
+    <meta name="description" content={description} />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:url" content={canonicalUrl} />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+
+    <!-- RSS autodiscovery -->
+    <link rel="alternate" type="application/rss+xml" href="/rss.xml" title="Akira's Music Box" />
+
+    <!-- GPG public key -->
+    <link rel="pgpkey" href="/pubkey.asc" />
+
+    <!--
+      Plausible analytics — SRI hash placeholder.
+      Before enabling: compute the sha256 hash of the Plausible script file and replace
+      SRI_HASH_PLACEHOLDER. Update hash on every Plausible script release.
+      Also update vercel.json script-src to include https://plausible.io.
+    -->
+    <!-- <script
+      defer
+      data-domain="akirasmusicbox.vercel.app"
+      src="https://plausible.io/js/script.js"
+      integrity="sha256-SRI_HASH_PLACEHOLDER"
+      crossorigin="anonymous"
+    ></script> -->
+  </head>
+  <body>
+    <!--
+      Skip link (WCAG 2.1 AA — keyboard navigation).
+      Visually hidden until focused; appears top-left on focus.
+      Uses CSS vars for colors (works in dark mode without hardcoded hex).
+    -->
+    <a
+      href="#main-content"
+      class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:rounded focus:outline-none"
+      style="background-color: var(--color-surface); color: var(--color-text); border: 1px solid var(--color-border);"
+    >
+      Skip to content
+    </a>
+
+    <slot name="nav" />
+
+    <main id="main-content">
+      <slot />
+    </main>
+
+    <slot name="footer" />
+  </body>
+</html>
