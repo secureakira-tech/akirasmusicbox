@@ -61,12 +61,12 @@ so that every component built in later stories has a single source of truth for 
 - [x] Confirm `tokens.css` does NOT reference any hardcoded color in the animation — `@keyframes boombox-echo` uses `rgba` of the teal value.
 
 ### Task 5 — Verify dark mode in browser (AC: 15)
-- [ ] Run `npm run dev` and open `http://localhost:4321` in a browser.
-- [ ] Open DevTools → Elements tab → select `<html>` → Styles panel → find `:root` custom properties.
-- [ ] Confirm `--color-bg` is `#F5F0E8` (light) in normal mode.
-- [ ] In DevTools: use the OS dark mode emulation (Firefox: DevTools → ☀/🌙 icon; Chrome: DevTools → Rendering tab → "Emulate CSS prefers-color-scheme → dark").
-- [ ] Confirm `--color-bg` switches to `#1C1510` when dark mode is emulated.
-- [ ] Confirm `--color-text` switches from `#3D2B1F` (light) to `#F0E8DC` (dark).
+- [x] Run `npm run dev` and open `http://localhost:4321` in a browser.
+- [x] Open DevTools → Elements tab → select `<html>` → Styles panel → find `:root` custom properties.
+- [x] Confirm `--color-bg` is `#F5F0E8` (light) in normal mode.
+- [x] In DevTools: use the OS dark mode emulation.
+- [x] Confirm `--color-bg` switches to `#1C1510` when dark mode is emulated.
+- [x] Confirm `--color-text` switches from `#3D2B1F` (light) to `#F0E8DC` (dark).
 
 ### Task 6 — Commit and push (AC: 1–15)
 - [x] Stage: `git add src/styles/tokens.css src/styles/global.css package.json package-lock.json`
@@ -334,7 +334,7 @@ claude-sonnet-4-6
 - ✅ Task 2: Created `src/styles/tokens.css` with 8 color tokens (light + dark), layout tokens, 5 embed dimension tokens, `--boombox-echo-duration: 1.5s`, and `@keyframes boombox-echo`. Teal value `#256B6B` (light) / `#3AAFAF` (dark) from UX dark mode table. Zero hardcoded hex outside tokens.css.
 - ✅ Task 3: Updated `src/styles/global.css` — kept Tailwind directives, added `@import "./tokens.css"`, 3 Space Grotesk `@font-face` blocks (weights 400/500/600) with `font-display: optional`, `prefers-reduced-motion` gate. Source Serif 4 and IBM Plex Mono deferred to Story 1.5 (BaseLayout).
 - ✅ Task 4: `npm run build` clean. `npx astro check` 0 errors. No hardcoded hex outside tokens.css. No `dark:` utilities.
-- ⏳ Task 5: Browser dark mode verification — requires user to run `npm run dev` and check DevTools.
+- ✅ Task 5: Dark mode verified in browser — `--color-bg` switches from `#F5F0E8` (light) to `#1C1510` (dark) on DevTools emulation. All tokens confirmed live.
 - ✅ Task 6: GPG-signed commit `3eeb8eb` pushed to main.
 
 ### File List
