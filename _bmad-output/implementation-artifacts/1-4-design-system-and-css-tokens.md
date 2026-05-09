@@ -1,6 +1,6 @@
 # Story 1.4: Design System & CSS Tokens
 
-Status: ready-for-dev
+Status: review
 
 ## Story
 
@@ -29,43 +29,36 @@ so that every component built in later stories has a single source of truth for 
 ## Tasks / Subtasks
 
 ### Task 1 — Install Fontsource packages (AC: 11)
-- [ ] Run:
+- [x] Run:
   ```bash
   npm install @fontsource/space-grotesk @fontsource/source-serif-4 @fontsource/ibm-plex-mono
   ```
-- [ ] Confirm all three packages appear in `package.json` dependencies.
-- [ ] Confirm `node_modules/@fontsource/space-grotesk/` exists with font files.
+- [x] Confirm all three packages appear in `package.json` dependencies.
+- [x] Confirm `node_modules/@fontsource/space-grotesk/` exists with font files.
 
 ### Task 2 — Create `src/styles/tokens.css` (AC: 1–6)
-- [ ] Create `src/styles/tokens.css` with the EXACT content from the Dev Notes "Final tokens.css" section below.
-- [ ] Confirm light-mode `:root` block contains all 8 color tokens.
-- [ ] Confirm dark-mode `@media (prefers-color-scheme: dark) :root` block is present and overrides all 8 colors.
-- [ ] Confirm embed dimension tokens are present (5 values).
-- [ ] Confirm `--boombox-echo-duration: 1.5s` and `@keyframes boombox-echo` are present.
-- [ ] Confirm NO hardcoded hex values appear anywhere *else* in the codebase (tokens.css is the only legal location for hex values).
+- [x] Create `src/styles/tokens.css` with the EXACT content from the Dev Notes "Final tokens.css" section below.
+- [x] Confirm light-mode `:root` block contains all 8 color tokens.
+- [x] Confirm dark-mode `@media (prefers-color-scheme: dark) :root` block is present and overrides all 8 colors.
+- [x] Confirm embed dimension tokens are present (5 values).
+- [x] Confirm `--boombox-echo-duration: 1.5s` and `@keyframes boombox-echo` are present.
+- [x] Confirm NO hardcoded hex values appear anywhere *else* in the codebase (tokens.css is the only legal location for hex values).
 
 ### Task 3 — Update `src/styles/global.css` (AC: 7–10)
-- [ ] Open the existing `src/styles/global.css` (currently just `@import "tailwindcss"` and `@plugin "@tailwindcss/typography"`).
-- [ ] Rewrite it with the content from the Dev Notes "Final global.css" section below.
-- [ ] Confirm `@import "tailwindcss"` remains the first line.
-- [ ] Confirm `@import "./tokens.css"` is present (makes tokens available during build).
-- [ ] Confirm `@font-face` declarations for Space Grotesk are present with `font-display: optional` (NOT `swap`).
-- [ ] Confirm the `@media (prefers-reduced-motion: reduce)` block is present.
-- [ ] Confirm no `@font-face` for Source Serif 4 or IBM Plex Mono — those are imported in BaseLayout.astro (Story 1.5).
+- [x] Open the existing `src/styles/global.css` (currently just `@import "tailwindcss"` and `@plugin "@tailwindcss/typography"`).
+- [x] Rewrite it with the content from the Dev Notes "Final global.css" section below.
+- [x] Confirm `@import "tailwindcss"` remains the first line.
+- [x] Confirm `@import "./tokens.css"` is present (makes tokens available during build).
+- [x] Confirm `@font-face` declarations for Space Grotesk are present with `font-display: optional` (NOT `swap`).
+- [x] Confirm the `@media (prefers-reduced-motion: reduce)` block is present.
+- [x] Confirm no `@font-face` for Source Serif 4 or IBM Plex Mono — those are imported in BaseLayout.astro (Story 1.5).
 
 ### Task 4 — Run validation checks (AC: 12–14)
-- [ ] Run `npm run build` — must complete with zero errors.
-- [ ] Run `npx astro check` — must return 0 errors.
-- [ ] Grep for hardcoded hex values outside tokens.css:
-  ```bash
-  grep -rn '#[0-9A-Fa-f]\{3,6\}' src/ --include='*.css' --include='*.astro' --include='*.ts' --exclude-path='*/tokens.css'
-  ```
-  Expected: zero matches (the only hex values live in tokens.css).
-- [ ] Grep for dark: Tailwind variants — must return zero:
-  ```bash
-  grep -rn 'dark:' src/
-  ```
-- [ ] Confirm `tokens.css` does NOT reference any hardcoded color in the animation — `@keyframes boombox-echo` uses `rgba` of the teal value.
+- [x] Run `npm run build` — must complete with zero errors.
+- [x] Run `npx astro check` — must return 0 errors.
+- [x] Grep for hardcoded hex values outside tokens.css: zero matches confirmed.
+- [x] Grep for dark: Tailwind variants: zero matches confirmed.
+- [x] Confirm `tokens.css` does NOT reference any hardcoded color in the animation — `@keyframes boombox-echo` uses `rgba` of the teal value.
 
 ### Task 5 — Verify dark mode in browser (AC: 15)
 - [ ] Run `npm run dev` and open `http://localhost:4321` in a browser.
@@ -76,14 +69,11 @@ so that every component built in later stories has a single source of truth for 
 - [ ] Confirm `--color-text` switches from `#3D2B1F` (light) to `#F0E8DC` (dark).
 
 ### Task 6 — Commit and push (AC: 1–15)
-- [ ] Stage: `git add src/styles/tokens.css src/styles/global.css package.json package-lock.json`
-- [ ] Review `git status` — confirm no unintended files staged.
-- [ ] Commit (GPG signing is active):
-  ```bash
-  git commit -m "feat(design): add CSS token system, fonts, and dark mode"
-  ```
-- [ ] Push: `git push`
-- [ ] Verify CI passes.
+- [x] Stage: `git add src/styles/tokens.css src/styles/global.css package.json package-lock.json`
+- [x] Review `git status` — confirmed no unintended files staged.
+- [x] Commit (GPG signing is active): GPG-signed commit `3eeb8eb`
+- [x] Push: `git push`
+- [x] Verify CI passes.
 
 ## Dev Notes
 
@@ -340,4 +330,16 @@ claude-sonnet-4-6
 
 ### Completion Notes List
 
+- ✅ Task 1: Installed `@fontsource/space-grotesk`, `@fontsource/source-serif-4`, `@fontsource/ibm-plex-mono`. Confirmed woff2 files present in `node_modules/@fontsource/space-grotesk/files/`.
+- ✅ Task 2: Created `src/styles/tokens.css` with 8 color tokens (light + dark), layout tokens, 5 embed dimension tokens, `--boombox-echo-duration: 1.5s`, and `@keyframes boombox-echo`. Teal value `#256B6B` (light) / `#3AAFAF` (dark) from UX dark mode table. Zero hardcoded hex outside tokens.css.
+- ✅ Task 3: Updated `src/styles/global.css` — kept Tailwind directives, added `@import "./tokens.css"`, 3 Space Grotesk `@font-face` blocks (weights 400/500/600) with `font-display: optional`, `prefers-reduced-motion` gate. Source Serif 4 and IBM Plex Mono deferred to Story 1.5 (BaseLayout).
+- ✅ Task 4: `npm run build` clean. `npx astro check` 0 errors. No hardcoded hex outside tokens.css. No `dark:` utilities.
+- ⏳ Task 5: Browser dark mode verification — requires user to run `npm run dev` and check DevTools.
+- ✅ Task 6: GPG-signed commit `3eeb8eb` pushed to main.
+
 ### File List
+
+- `src/styles/tokens.css` (new)
+- `src/styles/global.css` (modified)
+- `package.json` (modified — 3 Fontsource packages added)
+- `package-lock.json` (modified)
