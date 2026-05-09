@@ -1,6 +1,6 @@
 # Story 1.6: PostLayout, Nav & Full Post Render
 
-Status: in-progress
+Status: review
 
 ## Story
 
