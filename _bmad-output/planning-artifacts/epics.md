@@ -207,6 +207,26 @@ Generate Ed25519 GPG key; upload to keys.openpgp.org; generate and store revocat
 Create `.github/workflows/ci.yml` that runs on every push and pull request to main: `npm ci`, `astro check`, `tsc --noEmit`, `npm run build`. Fail the workflow on any error. No deployment — Vercel handles that independently via its GitHub integration.
 *Satisfies NFR15 (no broken builds reach main), AR1 (project initialized correctly).*
 
+#### E1-S2: Astro Project Initialization
+Run `npm create astro@latest` with minimal + TypeScript strict template at the repo root. Add all required integrations in sequence: `@astrojs/mdx`, `@astrojs/sitemap`, Tailwind v4 via `@tailwindcss/vite`, `@astrojs/rss`. Lock version pins in package.json before writing any collection code: `astro ^6.1.10`, `@tailwindcss/vite ^4.x`, `@tailwindcss/typography ^0.5.x`. Verify `npm run build` produces a dist/ output and CI goes green.
+*Satisfies AR1, AR2, NFR1 (static generation foundation).*
+
+#### E1-S3: Security Headers & Content Security Policy
+Expand the `vercel.json` stub from E1-S0 into a complete security headers configuration: strict Content-Security-Policy with exact `frame-src` origins for Spotify, YouTube, Apple Music; `script-src 'self'` with Plausible placeholder; `X-Content-Type-Options: nosniff`; `X-Frame-Options: SAMEORIGIN`; `Referrer-Policy: strict-origin-when-cross-origin`; `Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=()`. All headers delivered via `vercel.json`, not `<meta>` tags.
+*Satisfies NFR5–NFR13, AR3.*
+
+#### E1-S4: Design System & CSS Tokens
+Create `src/styles/tokens.css` with all color, animation, and embed dimension tokens as CSS custom properties (light and dark `:root` blocks). Create `src/styles/global.css` with `@plugin "@tailwindcss/typography"`, global `prefers-reduced-motion` gate, and `@font-face` declarations with `font-display: optional` for Space Grotesk. Install Fontsource packages: `@fontsource/space-grotesk`, `@fontsource/source-serif-4`, `@fontsource/ibm-plex-mono`. Verify dark mode tokens apply via `@media (prefers-color-scheme: dark)`.
+*Satisfies UX-DR1–UX-DR5, UX-DR20, AR6, AR7.*
+
+#### E1-S5: Content Schema & BaseLayout
+Create `src/content.config.ts` with full Zod schema for all frontmatter fields: `title`, `pubDate` (`z.coerce.date()`), `description` (`z.string()` — required), `genre`, `era`, `instrument`, `mood`, `postType`, `hifiSidebar` (boolean). Create `src/layouts/BaseLayout.astro` with: font imports, all SEO `<meta>` tags, Open Graph, RSS autodiscovery `<link>`, `<link rel="pgpkey">`, Plausible script stub with SRI placeholder, skip link, and `<main id="main-content">`. Create one sample MDX post in `src/content/posts/` to verify schema validation on build.
+*Satisfies FR1, FR2, FR6, FR25, AR8, AR9, AR18, AR19, UX-DR18, UX-DR24.*
+
+#### E1-S6: PostLayout, Nav & Full Post Render
+Create `src/layouts/PostLayout.astro` with two-column CSS Grid (`minmax(0, 700px) 220px`), sticky sidebar slot, site nav (52px, sticky top, Space Grotesk). Create `src/pages/index.astro` (home — latest post in full), `src/pages/posts/[slug].astro` (individual post), and `src/pages/archive.astro` (all posts, reverse-chronological using PostCard placeholder). Register all MDX components globally in `astro.config.mjs`. Verify a real post URL serves fully-styled prose content.
+*Satisfies FR6, FR8, FR25, FR38, FR39, FR40, UX-DR15–UX-DR17, UX-DR21–UX-DR23, UX-DR27.*
+
 **Epic 1 close gate:** Run `/security-review` before starting Epic 2.
 
 ### Epic 2: The Complete Post Reading Experience
