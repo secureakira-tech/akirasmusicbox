@@ -277,11 +277,11 @@ Expires: <date, ~1 year from publication>
 | Private key | Must never appear in the repository; audit `.gitignore` |
 
 **Record in this document:**
-- Full fingerprint: `[TO BE FILLED]`
-- Key creation date: `[TO BE FILLED]`
-- Expiry date: `[TO BE FILLED]`
+- Full fingerprint: `E6C3 5F6B 598A E564 0744  1A51 8218 2BAB BB58 ECEF`
+- Key creation date: `2026-05-09`
+- Expiry date: `2027-05-09`
 - Keyservers: keys.openpgp.org
-- Revocation certificate location: `[TO BE FILLED — offline storage]`
+- Revocation certificate location: `Offline — USB thumb drive (not in repo)`
 
 ---
 
