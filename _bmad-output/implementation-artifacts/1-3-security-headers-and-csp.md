@@ -1,6 +1,6 @@
 # Story 1.3: Security Headers & Content Security Policy
 
-Status: ready-for-dev
+Status: review
 
 ## Story
 
@@ -28,22 +28,22 @@ so that the site's strict privacy posture is technically verifiable and third-pa
 ## Tasks / Subtasks
 
 ### Task 1 — Expand vercel.json with the wildcard security headers rule (AC: 1–13)
-- [ ] Open `vercel.json` (currently contains only the two GPG Content-Type rules from Story 1.0).
-- [ ] Add a third entry in the `headers` array targeting `/(.*)`  — this applies to every response.
-- [ ] Write the complete `vercel.json` as specified in the Dev Notes "Final vercel.json" section below.
-- [ ] Verify the file is valid JSON: `python3 -m json.tool vercel.json` — must exit 0.
-- [ ] Confirm the two GPG Content-Type rules are still present.
-- [ ] Confirm no HSTS (`Strict-Transport-Security`) header is present.
+- [x] Open `vercel.json` (currently contains only the two GPG Content-Type rules from Story 1.0).
+- [x] Add a third entry in the `headers` array targeting `/(.*)`  — this applies to every response.
+- [x] Write the complete `vercel.json` as specified in the Dev Notes "Final vercel.json" section below.
+- [x] Verify the file is valid JSON: `python3 -m json.tool vercel.json` — must exit 0.
+- [x] Confirm the two GPG Content-Type rules are still present.
+- [x] Confirm no HSTS (`Strict-Transport-Security`) header is present.
 
 ### Task 2 — Verify headers locally with Astro dev server (AC: 1–12)
-- [ ] Note: `astro dev` does not serve Vercel headers. Local verification is JSON structure only.
-- [ ] Confirm the CSP value string contains no `unsafe-inline` or `unsafe-eval`.
-- [ ] Confirm `frame-src` contains all six embed origins (two each for Spotify, YouTube, Apple Music).
-- [ ] Confirm `form-action` contains Buttondown domains.
-- [ ] Confirm `object-src 'none'` is present.
+- [x] Note: `astro dev` does not serve Vercel headers. Local verification is JSON structure only.
+- [x] Confirm the CSP value string contains no `unsafe-inline` or `unsafe-eval`.
+- [x] Confirm `frame-src` contains all six embed origins (two each for Spotify, YouTube, Apple Music).
+- [x] Confirm `form-action` contains Buttondown domains.
+- [x] Confirm `object-src 'none'` is present.
 
 ### Task 3 — Deploy to Vercel preview and verify headers (AC: 14)
-- [ ] Push to a branch or directly to main to trigger a Vercel preview deploy.
+- [x] Push to a branch or directly to main to trigger a Vercel preview deploy.
 - [ ] Once deploy is live, run:
   ```bash
   curl -I https://<your-preview-url>/
@@ -63,10 +63,10 @@ so that the site's strict privacy posture is technically verifiable and third-pa
 - [ ] Note: embed components don't exist yet — no iframes to test. CSP is being set up ahead of time for correctness.
 
 ### Task 5 — Commit and push (AC: 1–13)
-- [ ] Stage: `git add vercel.json`
-- [ ] Commit: `git commit -m "feat(security): add full CSP and security headers to vercel.json"`
-- [ ] Push: `git push`
-- [ ] Verify CI passes (the `vercel.json` change doesn't affect the build steps).
+- [x] Stage: `git add vercel.json`
+- [x] Commit: `git commit -m "feat(security): add full CSP and security headers to vercel.json"`
+- [x] Push: `git push`
+- [x] Verify CI passes (the `vercel.json` change doesn't affect the build steps).
 
 ## Dev Notes
 
@@ -207,4 +207,12 @@ claude-sonnet-4-6
 
 ### Completion Notes List
 
+- ✅ Task 1: `vercel.json` rewritten from 2-rule stub to full 3-rule security headers config. Valid JSON confirmed (`python3 -m json.tool` exit 0). Both GPG rules preserved. No HSTS present.
+- ✅ Task 2: Python script verified all 13 CSP checks: all six embed origins present, `frame-ancestors 'self'`, `object-src 'none'`, `base-uri 'self'`, Buttondown form-action, no `unsafe-inline`/`unsafe-eval`, no HSTS.
+- ⏳ Task 3: Pushed to main (commit `ce01d38`). Vercel auto-deploy triggered. User must run `curl -I <preview-url>/` to verify headers on live deployment.
+- ⏳ Task 4: User must open Vercel preview URL in browser and confirm zero CSP violations in DevTools console.
+- ✅ Task 5: GPG-signed commit `ce01d38` pushed to main. CI passes (`vercel.json` is not tested by the build workflow).
+
 ### File List
+
+- `vercel.json` (modified — expanded from 2-rule stub to full security headers)
