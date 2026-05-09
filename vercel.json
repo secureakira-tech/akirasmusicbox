@@ -11,6 +11,22 @@
       "headers": [
         { "key": "Content-Type", "value": "application/octet-stream" }
       ]
+    },
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "Content-Security-Policy",
+          "value": "default-src 'self'; script-src 'self' https://plausible.io; connect-src 'self' https://plausible.io; frame-src open.spotify.com embed.spotify.com www.youtube.com www.youtube-nocookie.com embed.music.apple.com; frame-ancestors 'self'; img-src 'self' data:; style-src 'self'; font-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self' https://buttondown.com https://buttondown.email;"
+        },
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        { "key": "X-Frame-Options", "value": "SAMEORIGIN" },
+        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
+        {
+          "key": "Permissions-Policy",
+          "value": "camera=(), microphone=(), geolocation=(), payment=()"
+        }
+      ]
     }
   ]
 }

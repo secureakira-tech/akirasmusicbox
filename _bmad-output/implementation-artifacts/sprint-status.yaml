@@ -36,7 +36,7 @@
 # - SECURITY GATE: Run /security-review at end of Epic 1, Epic 3, and Epic 5 (pre-launch)
 
 generated: 2026-05-08
-last_updated: 2026-05-08
+last_updated: 2026-05-09
 project: akira
 project_key: NOKEY
 tracking_system: file-system
@@ -47,8 +47,8 @@ development_status:
   epic-1: in-progress
   1-0-gpg-key-and-author-identity: review
   1-1-ci-cd-pipeline-github-actions: review
-  1-2-astro-project-initialization: ready-for-dev
-  1-3-security-headers-and-csp: ready-for-dev
+  1-2-astro-project-initialization: review
+  1-3-security-headers-and-csp: in-progress
   1-4-design-system-and-css-tokens: backlog
   1-5-content-schema-and-base-layout: backlog
   1-6-post-layout-nav-and-full-post-render: backlog
