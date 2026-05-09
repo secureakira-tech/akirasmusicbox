@@ -1,0 +1,44 @@
+:root {
+  /* ── Colors — light mode ─────────────────────────────────────────────── */
+  --color-bg:          #F5F0E8;   /* cream — page background              */
+  --color-surface:     #EDE8DF;   /* slightly darker surface, cards       */
+  --color-text:        #3D2B1F;   /* brown — primary text (~12:1 vs bg)   */
+  --color-text-muted:  #6B4D3A;   /* muted metadata, secondary text       */
+  --color-border:      #EAE3D5;   /* subtle borders, dividers             */
+  --color-teal:        #256B6B;   /* interactive accent — links only      */
+  --color-green:       #3A5C3A;   /* hi-fi sidebar zone marker            */
+  --color-dark-orange: #C4520A;   /* structural editorial: embed borders  */
+
+  /* ── Layout ──────────────────────────────────────────────────────────── */
+  --measure:    65ch;
+  --embed-gap:  3rem;
+
+  /* ── Embed dimensions ────────────────────────────────────────────────── */
+  --embed-ratio-video:             16 / 9;
+  --embed-ratio-spotify-compact:   auto;
+  --embed-height-spotify-compact:  80px;
+  --embed-height-spotify-expanded: 352px;
+  --embed-ratio-apple:             16 / 9;
+
+  /* ── Animation ───────────────────────────────────────────────────────── */
+  --boombox-echo-duration: 1.5s;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-bg:          #1C1510;   /* warm near-black — NOT cool gray     */
+    --color-surface:     #231A13;
+    --color-text:        #F0E8DC;   /* warm off-white — NOT pure white     */
+    --color-text-muted:  #9A8070;
+    --color-border:      #3D2A1F;
+    --color-teal:        #3AAFAF;   /* brightened for dark-bg contrast     */
+    --color-green:       #5A9060;
+    --color-dark-orange: #E06820;   /* warm amber shift — avoids error-red */
+  }
+}
+
+@keyframes boombox-echo {
+  0%   { box-shadow: 0 0 0 0    rgba(37, 107, 107, 0.4); }
+  70%  { box-shadow: 0 0 0 12px rgba(37, 107, 107, 0);   }
+  100% { box-shadow: 0 0 0 0    rgba(37, 107, 107, 0);   }
+}
