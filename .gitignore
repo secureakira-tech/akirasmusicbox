@@ -28,3 +28,10 @@ Thumbs.db
 *_secret.asc
 revoke-*.asc
 secret-*.asc
+*.gpg
+*.pgp
+secring.*
+private-keys-v1.d/
+.gnupg/
+*.rev
+openpgp-revocs.d/

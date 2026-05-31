@@ -244,3 +244,10 @@ Readers can navigate the full publication — browse and filter the archive by g
 ### Epic 5: Trust Posture, Accessibility & Pre-Launch
 Every reader gets equal access regardless of how they navigate (keyboard, screen reader, dark mode). Technically-minded readers can verify the site's privacy claims. The site passes all security and accessibility gates.
 **FRs covered:** FR30, FR31, FR32, FR33, FR34, FR35, FR36, FR37
+
+**Pre-launch verification action items (carried forward):**
+- **GPG/security domain binding** (from Story 1.0 review 2026-05-09, Decision #2) — confirm `akirasmusicbox.com` is bound on Vercel and the following endpoints return 200 with the expected `Content-Type` / `Cache-Control` headers:
+  - `https://akirasmusicbox.com/pubkey.asc` → `application/pgp-keys`
+  - `https://akirasmusicbox.com/.well-known/security.txt` → `text/plain` (or signed variant)
+  - `https://akirasmusicbox.com/.well-known/openpgpkey/hu/q736ttod8166r8cwurunzdpqaira3pdr` → `application/octet-stream`
+  - `https://akirasmusicbox.com/.well-known/openpgpkey/policy` → `text/plain`

@@ -271,7 +271,7 @@ Expires: <date, ~1 year from publication>
 |---|---|
 | Key algorithm | Ed25519 or RSA-4096 minimum |
 | Expiry | Set 1–2 year expiry; expiry is a forcing function, not a liability |
-| Revocation certificate | Generate now, store offline, document location |
+| Revocation certificate | Generate now, store **two encrypted offline copies on geographically-separate media**, document both locations |
 | Rotation reminder | Calendar alert 60 days before expiry |
 | Key rotation | Keep retired public key published with a retirement note; do not silently replace |
 | Private key | Must never appear in the repository; audit `.gitignore` |
@@ -281,7 +281,22 @@ Expires: <date, ~1 year from publication>
 - Key creation date: `2026-05-09`
 - Expiry date: `2027-05-09`
 - Keyservers: keys.openpgp.org
-- Revocation certificate location: `Offline — USB thumb drive (not in repo)`
+- Revocation certificate locations:
+  - Copy 1: `Offline — USB thumb drive in home safe (not in repo)`
+  - Copy 2: `[TO BE FILLED — second encrypted offline copy on geographically-separate media; e.g., second USB at a different physical location, or encrypted offline cloud archive]`
+- WKD hash provenance: `q736ttod8166r8cwurunzdpqaira3pdr` derived from local-part `akirabrand` via `gpg --with-wkd-hash --fingerprint akirabrand@protonmail.com`
+- `.gitignore` audit (2026-05-09): full-history scan via `git log -p --all | grep -i 'PRIVATE KEY BLOCK'` returned no matches; no committed private key material.
+
+**Rotation/revocation runbook:** When the key approaches expiry or must be revoked, perform these steps in order so all four published artifacts move atomically:
+
+1. Generate new key (or load revocation cert) per Task 1 of Story 1.0.
+2. `gpg --keyserver hkps://keys.openpgp.org --send-keys <NEW-FPR>` (or `--send-keys` of the revoked key first).
+3. Re-export `public/pubkey.asc` (armored, no `--armor` flag for WKD blob).
+4. Re-export WKD blob: `gpg --export-options export-minimal --export <NEW-FPR> > public/.well-known/openpgpkey/hu/<new-z-base32-hash>` and remove the prior hash file.
+5. Update `public/.well-known/security.txt`: regenerate clearsigned version with `gpg --clearsign`, refresh `Expires:` to ~60 days before the new key expiry.
+6. Update this document's `Record in this document` block with the new fingerprint, creation date, expiry date, WKD hash provenance, and revocation cert locations.
+7. Commit + push (commits will be signed with the new key per repo `commit.gpgsign`).
+8. Verify deployment: `curl -I https://akirasmusicbox.com/pubkey.asc` (200 + `Content-Type: application/pgp-keys`) and `https://keys.openpgp.org/search?q=<email>` (within ~30 minutes).
 
 ---
 

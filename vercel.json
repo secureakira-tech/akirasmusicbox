@@ -1,15 +1,28 @@
 {
   "headers": [
     {
-      "source": "/(.*)\\.asc",
+      "source": "/pubkey\\.asc",
       "headers": [
-        { "key": "Content-Type", "value": "application/pgp-keys" }
+        { "key": "Content-Type", "value": "application/pgp-keys" },
+        { "key": "Cache-Control", "value": "public, max-age=3600, must-revalidate" },
+        { "key": "X-Content-Type-Options", "value": "nosniff" }
       ]
     },
     {
-      "source": "/.well-known/openpgpkey/(.*)",
+      "source": "/.well-known/openpgpkey/hu/(.*)",
       "headers": [
-        { "key": "Content-Type", "value": "application/octet-stream" }
+        { "key": "Content-Type", "value": "application/octet-stream" },
+        { "key": "Cache-Control", "value": "public, max-age=3600, must-revalidate" },
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        { "key": "Access-Control-Allow-Origin", "value": "*" }
+      ]
+    },
+    {
+      "source": "/.well-known/openpgpkey/policy",
+      "headers": [
+        { "key": "Content-Type", "value": "text/plain" },
+        { "key": "Cache-Control", "value": "public, max-age=3600, must-revalidate" },
+        { "key": "Access-Control-Allow-Origin", "value": "*" }
       ]
     },
     {

@@ -10,7 +10,7 @@ so that readers and collaborators can verify all site content and commits origin
 
 ## Acceptance Criteria
 
-1. Ed25519 GPG key exists in the local keyring with UID matching the author's identity (name + email).
+1. Ed25519 GPG key exists in the local keyring with UID matching the author's identity (name + email). _Ratified 2026-05-09 (review Decision #1): UID is `Akira Brand (Personal Key) <akirabrand@protonmail.com>`._
 2. Key is uploaded to `keys.openpgp.org` and findable by fingerprint or email within ~30 minutes of upload.
 3. Revocation certificate generated, stored **offline only** (not in this repo), and its location documented in `architecture.md`.
 4. All four `[TO BE FILLED]` placeholders in `_bmad-output/planning-artifacts/architecture.md` are replaced with real values: fingerprint, creation date, expiry date, revocation cert location.
@@ -31,8 +31,8 @@ so that readers and collaborators can verify all site content and commits origin
   - When prompted for key type: choose **(9) ECC and ECC** (Ed25519 + Cv25519 subkey)
   - Curve: **(1) Curve 25519** for both primary and subkey
   - Expiry: `1y` (one year — a forcing function for hygiene, not a liability)
-  - UID Name: `a k i r a` (or your preferred public identity)
-  - UID Email: `secureakira@gmail.com`
+  - UID Name: `Akira Brand (Personal Key)` _(ratified 2026-05-09 — was `a k i r a` in the original spec)_
+  - UID Email: `akirabrand@protonmail.com` _(ratified 2026-05-09 — was `secureakira@gmail.com` in the original spec; role alias `security@akirasmusicbox.com` deferred to follow-up story)_
   - Set a strong passphrase and store it in a password manager
 - [x] Note the full 40-character fingerprint from the output (e.g., `ABCD 1234 ...`)
 
@@ -131,6 +131,56 @@ so that readers and collaborators can verify all site content and commits origin
   secret-*.asc
   ```
 - [x] Run `git status` and confirm no private key material appears in tracked or untracked files.
+
+### Review Findings
+
+_Code review on 2026-05-09 (diff: `f5d9ee3..5a4f607`, scoped to story File List). Layers: Blind Hunter, Edge Case Hunter, Acceptance Auditor._
+
+**Decision-needed (resolved 2026-05-09):**
+
+- [x] [Review][Decision] Identity deviation (UID/email) — **Resolved: ratify published identity now, add role alias later.** Patches: amend Story 1.0 AC1 + Task 1 to match `Akira Brand <akirabrand@protonmail.com>`; update MEMORY.md `userEmail`. Defer: follow-up story to add `security@akirasmusicbox.com` role alias as `security.txt` Contact.
+- [x] [Review][Decision] Site-domain reality — **Resolved: domain will be bound before launch.** Patch: add a pre-launch verification action item for the Epic 5 security-review gate (confirm `akirasmusicbox.com` resolves to the Vercel deployment with the GPG/security.txt routes serving correctly). URLs stay as-is.
+- [x] [Review][Decision] Single-USB revocation cert — **Resolved: add second offline copy.** Patch: update `architecture.md` revocation-cert procedure to require two encrypted copies on geographically-separate offline media; record both locations.
+- [x] [Review][Decision] `.gitignore` `*.key` overbroadness — **Resolved: keep as-is (safety-first).** Dismissed; selectively allow with `!path/to/file.key` if/when a legitimate `.key` is added.
+- [x] [Review][Decision] Personal email as security Contact — **Resolved with #1: defer to role-alias follow-up story.**
+
+**Patches (applied 2026-05-09 except where noted):**
+
+- [ ] [Review][Patch] security.txt unsigned — wrap with `gpg --clearsign`; RFC 9116 SHOULD when `Encryption` is published. **Open — needs your hands (key passphrase)**: `gpg --clearsign --output public/.well-known/security.txt.signed public/.well-known/security.txt && mv public/.well-known/security.txt.signed public/.well-known/security.txt`. [`public/.well-known/security.txt`]
+- [x] [Review][Patch] security.txt missing `Canonical` — added `Canonical: https://akirasmusicbox.com/.well-known/security.txt` [`public/.well-known/security.txt`]
+- [x] [Review][Patch] security.txt missing `Policy` — stubbed `Policy: https://akirasmusicbox.com/security-policy`. Page itself is a follow-up; the Policy link will 404 until a security-policy page is added in a later Epic 1/5 story. [`public/.well-known/security.txt`]
+- [x] [Review][Patch] security.txt `Expires` shortened — `2027-05-09T00:00:00.000Z` → `2027-03-10T00:00:00.000Z` (60 days before key expiry) [`public/.well-known/security.txt`]
+- [x] [Review][Patch] `*.asc` Vercel regex narrowed — `/(.*)\\.asc` → `/pubkey\\.asc` [`vercel.json`]
+- [x] [Review][Patch] WKD rule split — `text/plain` for `policy`, `application/octet-stream` for `hu/*` [`vercel.json`]
+- [x] [Review][Patch] `Cache-Control: public, max-age=3600, must-revalidate` added to all three key/WKD rules [`vercel.json`]
+- [x] [Review][Patch] `Access-Control-Allow-Origin: *` added to both openpgpkey routes [`vercel.json`]
+- [x] [Review][Patch] `X-Content-Type-Options: nosniff` added to `/pubkey.asc` and the WKD `hu/*` rule (note: also already covered by the existing global `/(.*)` rule from Story 1.3, redundancy is harmless) [`vercel.json`]
+- [x] [Review][Patch] `.gitignore` extended with `*.gpg`, `*.pgp`, `secring.*`, `private-keys-v1.d/`, `.gnupg/` [`.gitignore`]
+- [x] [Review][Patch] `.gitignore` extended with `*.rev`, `openpgp-revocs.d/` [`.gitignore`]
+- [x] [Review][Patch] Rotation/revocation runbook added to architecture.md (8 ordered steps from regen → keyserver upload → re-export pubkey/WKD → re-clearsign security.txt → update doc → commit/push → verify deploy) [`_bmad-output/planning-artifacts/architecture.md`]
+- [x] [Review][Patch] WKD hash provenance recorded in architecture.md: `q736ttod8166r8cwurunzdpqaira3pdr` from local-part `akirabrand` via `gpg --with-wkd-hash --fingerprint akirabrand@protonmail.com` [`_bmad-output/planning-artifacts/architecture.md`]
+- [ ] [Review][Patch] Story missing AC10/AC13/AC2 evidence — **Open — needs your hands**: paste `git log --show-signature -1 5558089`, `git config --list | grep sign`, and a keys.openpgp.org search-result URL + verification email timestamp into Debug Log References below. [`_bmad-output/implementation-artifacts/1-0-gpg-key-and-author-identity.md`]
+- [x] [Review][Patch] `.gitignore` audit result recorded in architecture.md (`git log -p --all | grep -i 'PRIVATE KEY BLOCK'` returned no matches as of 2026-05-09) [`_bmad-output/planning-artifacts/architecture.md`]
+- [x] [Review][Patch] Story 1.0 AC1 + Task 1 amended to ratify `Akira Brand (Personal Key) / akirabrand@protonmail.com` (from Decision #1) [`_bmad-output/implementation-artifacts/1-0-gpg-key-and-author-identity.md`]
+- [x] [Review][Patch] Auto-memory updated — added `project_ratified_author_identity.md` and indexed in `MEMORY.md` so future sessions trust the ratified identity over the system-injected `userEmail`. **Note**: the repo-level `git config user.email` is still `secureakira@gmail.com`; updating git config requires your hands per safety policy. Run when ready: `git config user.email akirabrand@protonmail.com`. [`~/.claude/projects/-home-akira-akirasmusicbox/memory/`, repo `git config`]
+- [x] [Review][Patch] Pre-launch domain-binding verification action item added to Epic 5 in `epics.md` (from Decision #2) [`_bmad-output/planning-artifacts/epics.md`]
+- [x] [Review][Patch] Architecture.md revocation-cert procedure now requires **two** encrypted offline copies on geographically-separate media. Copy 2 location placeholder is `[TO BE FILLED]` — fill in once you decide on the second location [`_bmad-output/planning-artifacts/architecture.md`]
+
+**Deferred (recorded; addressed later):**
+
+- [x] [Review][Defer] No `direct` WKD variant published [`public/.well-known/openpgpkey/`] — deferred, requires DNS subdomain `openpgpkey.akirasmusicbox.com`; advanced method sufficient for now
+- [x] [Review][Defer] WKD policy-file rationale not documented [`_bmad-output/planning-artifacts/architecture.md`] — deferred, doc-only note; bundle with a future architecture sweep
+- [x] [Review][Defer] WKD `?l=` query handling unverified on Vercel [`vercel.json`] — deferred, post-deploy verification task
+- [x] [Review][Defer] No CI smoke test for vercel header serving [`.github/workflows/`] — deferred, follow-up CI improvement
+- [x] [Review][Defer] vercel.json `source` regex case-sensitivity [`vercel.json`] — deferred, `/PUBKEY.ASC` bypass — minor, no real attack surface
+- [x] [Review][Defer] vercel.json `trailingSlash` not explicit [`vercel.json`] — deferred, verify post-deploy
+- [x] [Review][Defer] `.gitignore` patterns case-sensitive on case-insensitive FS [`.gitignore`] — deferred, document for contributors
+- [x] [Review][Defer] No fingerprint Comment header in pubkey.asc [`public/pubkey.asc`] — deferred, requires re-export; nice-to-have
+- [x] [Review][Defer] Architecture.md committed under `_bmad-output/` [`_bmad-output/planning-artifacts/architecture.md`] — deferred, project convention; not story-scoped
+- [x] [Review][Defer] Fingerprint surfaced only in repo (no out-of-band path) — deferred, future `/pgp` page story (UX-DR24) handles public fingerprint surface
+- [x] [Review][Defer] Role-based security Contact alias — deferred, follow-up story to add `security@akirasmusicbox.com` (or equivalent role alias) as the `security.txt` Contact instead of the personal `akirabrand@protonmail.com`. From Decisions #1 + #5.
+
+**Dismissed as noise (4):** SPF/DKIM/DMARC for Contact mailbox (out of scope), optional security.txt fields missing (`Acknowledgments`, `Hiring`, second `Preferred-Languages`), `Expires` sub-second precision `.000Z` (matches spec example, valid RFC 3339), `.gitignore` `*.key` overbroadness (kept as-is per Decision #4, safety-first).
 
 ## Dev Notes
 
