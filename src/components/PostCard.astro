@@ -5,16 +5,18 @@ interface Props {
   pubDate: Date;
   description: string;
   genre?: string;
-  mood?: string;
   hifiSidebar?: boolean;
 }
 
 const { id, title, pubDate, description, genre, hifiSidebar = false } = Astro.props;
 
+// timeZone: 'UTC' keeps date-only pubDate values (coerced to UTC midnight)
+// from displaying as the previous day in negative-offset build regions.
 const formattedDate = new Intl.DateTimeFormat('en-US', {
   year: 'numeric',
   month: 'long',
   day: 'numeric',
+  timeZone: 'UTC',
 }).format(pubDate);
 ---
 
@@ -22,7 +24,7 @@ const formattedDate = new Intl.DateTimeFormat('en-US', {
   <a href={`/posts/${id}`} class="post-card-link">
     <div class="post-card-meta">
       {hifiSidebar && (
-        <span class="hifi-dot" title="Hi-Fi annotated" aria-label="Hi-Fi annotated"></span>
+        <span class="hifi-dot" role="img" title="Hi-Fi annotated" aria-label="Hi-Fi annotated"></span>
       )}
       <time datetime={pubDate.toISOString()} class="post-date">{formattedDate}</time>
       {genre && <span class="post-genre">{genre}</span>}

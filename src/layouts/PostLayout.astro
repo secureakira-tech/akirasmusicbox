@@ -6,27 +6,24 @@ interface Props {
   title: string;
   description?: string;
   ogImage?: string;
-  pubDate?: Date;
-  genre?: string;
-  era?: string;
-  instrument?: string;
-  mood?: string;
-  postType?: string;
-  hifiSidebar?: boolean;
 }
 
-const { title, description, ogImage, hifiSidebar = false } = Astro.props;
+const { title, description, ogImage } = Astro.props;
+
+// Two-column layout is driven by actual sidebar content, not a frontmatter
+// flag — prevents reserving an empty 220px gutter when no sidebar is passed.
+const hasSidebar = Astro.slots.has('sidebar');
 ---
 
 <BaseLayout {title} {description} {ogImage}>
   <SiteNav slot="nav" />
 
-  <div class:list={['post-layout', { 'has-sidebar': hifiSidebar }]}>
+  <div class:list={['post-layout', { 'has-sidebar': hasSidebar }]}>
     <article class="prose-column">
       <slot />
     </article>
 
-    {hifiSidebar && (
+    {hasSidebar && (
       <aside class="sidebar-column" aria-label="Hi-Fi notes">
         <slot name="sidebar" />
       </aside>

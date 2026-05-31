@@ -1,12 +1,7 @@
 ---
 import { getCollection, render } from 'astro:content';
 import PostLayout from '../../layouts/PostLayout.astro';
-import PrimaryEmbed from '../../components/PrimaryEmbed.astro';
-import ReferenceEmbed from '../../components/ReferenceEmbed.astro';
-import Note from '../../components/Note.astro';
-import ArtistSupport from '../../components/ArtistSupport.astro';
-import ClosingRitual from '../../components/ClosingRitual.astro';
-import NewsletterSubscribe from '../../components/NewsletterSubscribe.astro';
+import { mdxComponents } from '../../components/mdxComponents';
 
 export async function getStaticPaths() {
   const posts = await getCollection('posts');
@@ -22,21 +17,11 @@ type Props = {
 
 const { post } = Astro.props;
 const { Content } = await render(post);
-const { title, description, pubDate, genre, era, instrument, mood, postType, hifiSidebar } = post.data;
+const { title, description } = post.data;
 ---
 
-<PostLayout
-  {title}
-  {description}
-  {pubDate}
-  {genre}
-  {era}
-  {instrument}
-  {mood}
-  {postType}
-  {hifiSidebar}
->
+<PostLayout {title} {description}>
   <div class="prose">
-    <Content components={{ PrimaryEmbed, ReferenceEmbed, Note, ArtistSupport, ClosingRitual, NewsletterSubscribe }} />
+    <Content components={mdxComponents} />
   </div>
 </PostLayout>

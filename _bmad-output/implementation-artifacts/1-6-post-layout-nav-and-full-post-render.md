@@ -1,6 +1,6 @@
 # Story 1.6: PostLayout, Nav & Full Post Render
 
-Status: review
+Status: done
 
 ## Story
 
@@ -764,3 +764,28 @@ claude-sonnet-4-6 (create-story)
 ### Completion Notes List
 
 ### File List
+
+## Review Findings
+
+_Code review 2026-05-31 — Blind Hunter + Edge Case Hunter + Acceptance Auditor._
+
+### Decision Needed — RESOLVED
+
+- [x] [Review][Decision→Patch] AC13 — MDX components were not registered. **Spec defect discovered:** `@astrojs/mdx` v5 has NO `components` config option (`mdx({ components })` is invalid — `astro check` fails with ts(2353), and `architecture.md#MDX-Content-Patterns` is wrong about this). Astro only applies components via `<Content components={...} />`. **Resolved (akira's call: follow spec intent of a single registration point):** created `src/components/mdxComponents.ts` as the DRY source of truth, imported into `index.astro` and `[slug].astro`. AC13 is technically unmeetable as written and should be amended; the architecture doc needs correcting. (sources: auditor+blind)
+- [x] [Review][Decision→Patch+Defer] `hifiSidebar: true` empty-aside / broken grid. **Resolved (akira's call: defer wiring, guard the gutter):** PostLayout now drives the two-column layout off `Astro.slots.has('sidebar')` instead of the `hifiSidebar` flag, so no empty 220px gutter is reserved when no sidebar content is passed. Full `HiFiSidebar` wiring deferred to the Hi-Fi epic (logged in `deferred-work.md`). [src/layouts/PostLayout.astro] (sources: edge+blind)
+- [x] [Review][Decision→Patch] PostLayout dead metadata plumbing. **Resolved (akira's call: remove):** stripped unused `pubDate/genre/era/instrument/mood/postType` props from `PostLayout` `Props` and from the `<PostLayout>` calls in both pages. [src/layouts/PostLayout.astro, src/pages/index.astro, src/pages/posts/[slug].astro] (sources: blind+edge)
+
+### Patch — APPLIED
+
+- [x] [Review][Patch] Date off-by-one fixed — added `timeZone: 'UTC'` to `Intl.DateTimeFormat` [src/components/PostCard.astro:14]
+- [x] [Review][Patch] SiteNav `:focus-visible` indicator added (teal outline) for keyboard a11y / WCAG 2.4.7 [src/components/SiteNav.astro:style]
+- [x] [Review][Patch] `role="img"` added to the decorative `.hifi-dot` span [src/components/PostCard.astro:markup]
+- [x] [Review][Patch] Removed unused `mood` prop from PostCard `Props` and from the `archive.astro` call [src/components/PostCard.astro, src/pages/archive.astro]
+
+_Post-patch verification: `npx astro check` → 0 errors / 0 warnings / 0 hints (19 files); `npm run build` → clean, 3 routes. Note: MDX component registration compiles correctly but is not exercised by the current test post (it uses none of the six components)._
+
+### Deferred
+
+- [x] [Review][Defer] Subdirectory posts break routing — glob `**/*.mdx` yields a multi-segment `post.id` that the single `[slug]` route and PostCard href cannot serve; latent (all current posts are flat) [src/pages/posts/[slug].astro:11]
+- [x] [Review][Defer] `/` and `/posts/<latest-id>` render identical content with no `<link rel="canonical">` — duplicate-content SEO [src/pages/index.astro]
+- [x] [Review][Defer] Zero-posts handling is inconsistent — `index.astro` hard-throws while `archive.astro`/`[slug].astro` are silent [src/pages/index.astro:13]
