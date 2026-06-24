@@ -1,6 +1,6 @@
 # Story 1.0: GPG Key & Author Identity
 
-Status: review
+Status: done
 
 ## Story
 
@@ -260,6 +260,23 @@ claude-sonnet-4-6
 
 ### Debug Log References
 
+**AC evidence (gathered 2026-06-23 re-review):**
+
+- **AC10 — signing config** (`git config --list | grep sign`):
+  ```
+  user.signingkey=E6C35F6B598AE56407441A5182182BABBB58ECEF
+  commit.gpgsign=true
+  ```
+- **AC13 — signed test commit** (`git log --show-signature -1 5558089`):
+  ```
+  commit 55580893ec61994cc713d786d19e6db1d6c18121
+  gpg: Signature made Fri 08 May 2026 09:33:14 PM MDT
+  gpg:                using EDDSA key E6C35F6B598AE56407441A5182182BABBB58ECEF
+  gpg: Good signature from "Akira Brand (Personal Key) <akirabrand@protonmail.com>" [ultimate]
+  ```
+  _Note: at the time of commit `5558089` the Author was `akira <secureakira@gmail.com>`. Repo `git config user.email` switched to the ratified `akirabrand@protonmail.com` on 2026-06-23 (carried item from 2026-05-09 now closed); future commits carry the ratified identity. The GPG signature was always correct._
+- **AC2 — keyserver findability:** New key `25C5 BC03…014B 6AC0` uploaded to keys.openpgp.org and email-verified on 2026-06-24. Public search: `https://keys.openpgp.org/search?q=akira@akirasmusicbox.com`. The superseded key `E6C3 5F6B…BB58 ECEF` (`akirabrand@protonmail.com`) was revoked and the revocation published the same day.
+
 ### Completion Notes List
 
 - ✅ Task 1: Ed25519 GPG key generated. UID: Akira Brand (Personal Key) <akirabrand@protonmail.com>. Fingerprint: E6C3 5F6B 598A E564 0744  1A51 8218 2BAB BB58 ECEF. Expires: 2027-05-09.
@@ -282,3 +299,29 @@ claude-sonnet-4-6
 - `public/pubkey.asc` (new — added after Task 5)
 - `vercel.json` (new)
 - `.gitignore` (modified — GPG exclusion patterns added)
+
+### Review Findings — Re-Review 2026-06-23
+
+_Second code review (diff: `f5d9ee3..HEAD`, current repo state of the story File List). Layers: Blind Hunter, Edge Case Hunter, Acceptance Auditor. All cryptographic artifacts re-verified (key UID, WKD hash recomputed, signed commit `5558089`). No Critical findings; one High (WKD reachability) raised that the first review missed._
+
+**Decision-needed:**
+
+- [x] [Review][Decision] **Self-hosted WKD is non-functional for the published key email — RESOLVED 2026-06-23: keep + document.** WKD lookup keys on the email's *domain*: clients resolving `akirabrand@protonmail.com` query `protonmail.com` (which Proton serves automatically), never `akirasmusicbox.com`. The self-hosted `public/.well-known/openpgpkey/` tree therefore serves no queryable address (the `q736…` hash is local-part `akirabrand`; the real domain address would be `akira@akirasmusicbox.com` → a *different* hash). **Decision:** retain the files as forward-looking infrastructure and document that self-hosted WKD is intentionally non-functional for now — key distribution is fully covered by `pubkey.asc` (linked from `security.txt` `Encryption:`), keys.openpgp.org, and Proton's own WKD. Making self-hosted WKD functional (add `akira@akirasmusicbox.com` UID, new hash, re-export) is deferred to a future "domain email" story. [`public/.well-known/openpgpkey/`]
+- [x] [Review][Decision] **security.txt is not clearsigned** — **RESOLVED 2026-06-24.** Clearsigned with the re-issued key (`gpg --clearsign --local-user akira@akirasmusicbox.com`); `gpg --verify` returns `Good signature from "Akira Brand <akira@akirasmusicbox.com>"`. [`public/.well-known/security.txt`]
+- [x] [Review][Decision] **AC2/AC10/AC13 evidence absent from Debug Log References** — **RESOLVED 2026-06-24.** AC10 (signing config) and AC13 (signed-commit verification) recorded in Debug Log References; AC2 satisfied by the re-keyed `akira@akirasmusicbox.com` key, uploaded + email-verified on keys.openpgp.org 2026-06-24. Note: AC10/AC13 will be freshly re-evidenced by the forthcoming re-key commit, which is signed by the new key (`commit.gpgsign=true`, `user.signingkey` = new fp). [`_bmad-output/implementation-artifacts/1-0-gpg-key-and-author-identity.md`]
+
+**Patches:**
+
+- [x] [Review][Patch] **No explicit `text/plain; charset=utf-8` Content-Type rule for `/.well-known/security.txt`** — RFC 9116 §2.1 requires `text/plain; charset=utf-8`. **Applied 2026-06-23:** added a `/.well-known/security.txt` header rule (Content-Type `text/plain; charset=utf-8` + Cache-Control) ahead of the catch-all in `vercel.json`. [`vercel.json`]
+- [x] [Review][Patch] **Document that self-hosted WKD is intentionally non-functional** (from resolved Decision above). **Applied 2026-06-23:** added a "WKD reachability note" to the GPG Key Publication record block in `architecture.md`. [`_bmad-output/planning-artifacts/architecture.md`]
+
+**Deferred (recorded; addressed later):**
+
+- [x] [Review][Defer] Make self-hosted WKD functional for a domain address — add `akira@akirasmusicbox.com` UID, compute new hash, re-export binary blob + `pubkey.asc`, optionally re-upload to keys.openpgp.org [`public/.well-known/openpgpkey/`] — deferred to a future "domain email" story; not blocking, Proton WKD + keyserver cover distribution now.
+- [x] [Review][Defer] Site-domain mismatch: `astro.config.mjs` `site` is `akirasmusicbox.vercel.app` but `security.txt`/`Canonical` use `akirasmusicbox.com` [`astro.config.mjs`, `public/.well-known/security.txt`] — deferred, covered by the existing Epic 5 pre-launch domain-binding verification gate (Decision #2, 2026-05-09).
+- [x] [Review][Defer] `Policy: https://akirasmusicbox.com/security-policy` 404s — no such page exists [`public/.well-known/security.txt`] — deferred, known stub; security-policy page is a later Epic 1/5 story.
+- [x] [Review][Defer] `.gitignore` armored-secret naming gap — a plain/hyphenated armored secret export (e.g. `mykey.asc`, `akira-secret.asc`) is NOT matched by the `*_secret.asc`/`secret-*.asc` patterns [`.gitignore`] — deferred, document for contributors; broadening to `*.asc` risks ignoring the tracked `pubkey.asc`.
+- [x] [Review][Defer] Revocation cert Copy 2 location still `[TO BE FILLED]` in architecture.md [`_bmad-output/planning-artifacts/architecture.md`] — deferred, deliberate placeholder from Decision #3 (2026-05-09).
+- [x] [Review][Defer] No in-repo proof that `vercel.json` headers actually apply on the real static deploy (no Vercel adapter installed; default static output) [`vercel.json`] — deferred, post-deploy verification task.
+
+**Dismissed as noise (7):** duplicate `X-Content-Type-Options` from catch-all overlap (harmless, accepted 2026-05-09); `policy`/`hu/*` Content-Type charset omission (policy is empty, hu is binary — moot); `.gitignore` `.claude/` ignore (intended local tooling); 3× CSP findings — `connect-src`/`script-src` vs `form-action`, missing `upgrade-insecure-requests`/`report-uri`, CSP on raw assets (all out of scope — Story 1.3's CSP block); `Expires` millisecond precision + `Expires` preceding key expiry (intentional — set to 60 days before key expiry per 2026-05-09 patch).

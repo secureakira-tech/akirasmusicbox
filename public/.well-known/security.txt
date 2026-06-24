@@ -1,6 +1,17 @@
-Contact: mailto:akirabrand@protonmail.com
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA512
+
+Contact: mailto:akira@akirasmusicbox.com
 Encryption: https://akirasmusicbox.com/pubkey.asc
 Canonical: https://akirasmusicbox.com/.well-known/security.txt
 Policy: https://akirasmusicbox.com/security-policy
 Preferred-Languages: en
-Expires: 2027-03-10T00:00:00.000Z
+Expires: 2027-04-25T00:00:00.000Z
+-----BEGIN PGP SIGNATURE-----
+
+iI8EARYKADcWIQQlxbwDUoh+WlWJLRuW3NQrAUtqwAUCajtIRRkcYWtpcmFAYWtp
+cmFzbXVzaWNib3guY29tAAoJEJbc1CsBS2rAugYBAJperwyckLmrqSj9iKu6TkHD
+N9Z/vrt1q6CrOYyFLk5IAP9xJmi/uBv710HfbjlWVtpP5cIgGdzGIo1eekpX5rR5
+CQ==
+=bkUT
+-----END PGP SIGNATURE-----

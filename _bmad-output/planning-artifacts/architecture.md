@@ -277,14 +277,17 @@ Expires: <date, ~1 year from publication>
 | Private key | Must never appear in the repository; audit `.gitignore` |
 
 **Record in this document:**
-- Full fingerprint: `E6C3 5F6B 598A E564 0744  1A51 8218 2BAB BB58 ECEF`
-- Key creation date: `2026-05-09`
-- Expiry date: `2027-05-09`
+- Full fingerprint: `25C5 BC03 5288 7E5A 5589  2D1B 96DC D42B 014B 6AC0`
+- UID: `Akira Brand <akira@akirasmusicbox.com>`
+- Key creation date: `2026-06-24`
+- Expiry date: `2027-06-24`
 - Keyservers: keys.openpgp.org
 - Revocation certificate locations:
-  - Copy 1: `Offline — USB thumb drive in home safe (not in repo)`
+  - Copy 1: `Offline — PNY USB drive (not in repo)`
   - Copy 2: `[TO BE FILLED — second encrypted offline copy on geographically-separate media; e.g., second USB at a different physical location, or encrypted offline cloud archive]`
-- WKD hash provenance: `q736ttod8166r8cwurunzdpqaira3pdr` derived from local-part `akirabrand` via `gpg --with-wkd-hash --fingerprint akirabrand@protonmail.com`
+- WKD hash provenance: `9g7by35z53419fpgw8r4gu1cjjyo1h1y` derived from local-part `akira` via `gpg --with-wkd-hash --fingerprint akira@akirasmusicbox.com`
+- **WKD reachability note (updated 2026-06-24):** As of the 2026-06-24 re-key, the key's UID email is `akira@akirasmusicbox.com` — a domain this site controls — so the self-hosted WKD tree at `public/.well-known/openpgpkey/` **becomes functional once `akirasmusicbox.com` is bound to the deploy** (WKD clients resolve against the email's domain). Until the `.com` is live (Epic 5 pre-launch gate), the tree is correct-but-not-yet-reachable. The blob and `pubkey.asc` were re-exported for the new key; the prior `q736…` hash (local-part `akirabrand`, retired protonmail key) was removed.
+- **Key history:** The original key `E6C3 5F6B 598A E564 0744 1A51 8218 2BAB BB58 ECEF` (`Akira Brand (Personal Key) <akirabrand@protonmail.com>`, created 2026-05-09) was **retired 2026-06-24 — passphrase lost, unrecoverable**, and revoked via its offline revocation certificate. Superseded by the key recorded above.
 - `.gitignore` audit (2026-05-09): full-history scan via `git log -p --all | grep -i 'PRIVATE KEY BLOCK'` returned no matches; no committed private key material.
 
 **Rotation/revocation runbook:** When the key approaches expiry or must be revoked, perform these steps in order so all four published artifacts move atomically:
